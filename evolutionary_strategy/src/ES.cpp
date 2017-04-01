@@ -104,7 +104,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 		generation++;
 	}
 
-	//ritorna il migliore fra tutti
+	//TODO return best of all
 	return 0;
 }
 
