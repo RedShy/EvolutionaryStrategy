@@ -1,9 +1,10 @@
-#include<iostream>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <limits>
+#include <queue>
 using namespace std;
 
 struct MatchingSchema
@@ -45,6 +46,11 @@ struct MatchingSchema
 			costValue = rand() % 999999999999;
 		}
 
+		bool operator<(const MatchingSchema& m) const
+		{
+			return this->costValue >= m.costValue;
+		}
+
 };
 
 bool isValid(MatchingSchema m);
@@ -52,22 +58,34 @@ vector<MatchingSchema> selectBestIndividuals(unsigned mu,
 		const vector<MatchingSchema>& parents,
 		const vector<MatchingSchema>& children);
 vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		const vector<MatchingSchema>& parents);
+		const vector<MatchingSchema>& children);
 
 unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 		const unsigned lambda, const bool plusSelection,
 		MatchingSchema startingMatchingSchema)
 {
 	unsigned generation = 0;
-	unsigned min = numeric_limits<unsigned int>::max();
-	MatchingSchema best;
 
 	//Generate mu random individuals
 	vector<MatchingSchema> parents;
 	for (unsigned i = 0; i < mu; i++)
 	{
 		startingMatchingSchema.shuffle();
-		parents.push_back(startingMatchingSchema);
+
+		//validate matching schema
+		if (isValid(startingMatchingSchema))
+		{
+			startingMatchingSchema.calculateCost();
+
+			parents.push_back(startingMatchingSchema);
+			push_heap(parents.begin(), parents.end());
+		}
+		else
+		{
+			//TODO: not valid, maybe mutate until is valid?
+			//repeat iteration
+			i--;
+		}
 	}
 
 	vector<MatchingSchema> children;
@@ -88,17 +106,10 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 			//validate child
 			if (isValid(child))
 			{
-
 				child.calculateCost();
 
-				//New valid child, maybe better than anyone?
-				if (child.costValue < min)
-				{
-					min = child.costValue;
-					best = child;
-				}
-
 				children.push_back(child);
+				push_heap(children.begin(), children.end());
 			}
 			else
 			{
@@ -110,13 +121,13 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 
 		if (plusSelection)
 		{
-			//Select from parents+children
+			//Select mu parents for next generation from parents+children
 			parents = selectBestIndividuals(mu, parents, children);
 		}
 		else
 		{
 			//Comma selection
-			//Select from children
+			//Select mu parents for next generation from children
 			parents = selectBestIndividuals(mu, children);
 		}
 
@@ -125,7 +136,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 	}
 
 	//TODO return best of all
-	return best.costValue;
+	return parents.front().costValue;
 }
 
 bool isValid(MatchingSchema m)
@@ -135,17 +146,38 @@ bool isValid(MatchingSchema m)
 }
 
 vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		const vector<MatchingSchema>& parents,
-		const vector<MatchingSchema>& children)
+		vector<MatchingSchema>& parents, vector<MatchingSchema>& children)
 {
-	//TODO
+	//TODO using a heap
+
+	//merge the two heaps, silly algorithm
+	while (parents.size() != 0)
+	{
+		children.push_back(parents.back());
+		parents.pop_back();
+	}
+
+	make_heap(children.begin(), children.end());
+
+	return selectBestIndividuals(mu, children);
+
 }
 vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		const vector<MatchingSchema>& parents)
+		vector<MatchingSchema>& children)
 {
-	//TODO
-}
+	//TODO using a heap
 
+	vector<MatchingSchema> bestIndividuals;
+
+	for (unsigned i = 0; i < mu; i++)
+	{
+		pop_heap(children.begin(), children.end());
+		bestIndividuals.push_back(children.back());
+		children.pop_back();
+	}
+
+	return bestIndividuals;
+}
 
 int main()
 {
