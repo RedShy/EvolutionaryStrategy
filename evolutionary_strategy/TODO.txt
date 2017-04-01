@@ -1,0 +1,8 @@
+Adattare al codice pre esistente
+
+Inserire chiamata a edit distance
+
+togliere vectors e mettere new unsigned*
+
+Trovare algoritmo per selezionare i migliori individui tra parents+children
+
