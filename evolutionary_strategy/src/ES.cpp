@@ -9,18 +9,12 @@ using namespace std;
 
 struct MatchingSchema
 {
+		MatchingSchema(const vector<unsigned>&_sigma_1,
+				const vector<unsigned>&_sigma_2) :
+				sigma_1(_sigma_1), sigma_2(_sigma_2)
+		{
 
-//		MatchingSchema()
-//		{
-//
-//		}
-//
-//		MatchingSchema(const vector<unsigned>&_sigma_1,
-//				const vector<unsigned>&_sigma_2) :
-//				sigma_1(_sigma_1), sigma_2(_sigma_2)
-//		{
-//
-//		}
+		}
 
 		vector<unsigned> sigma_1;
 		vector<unsigned> sigma_2;
@@ -202,8 +196,7 @@ int main()
 	s2.push_back(4);
 	s2.push_back(5);
 	s2.push_back(6);
-//	MatchingSchema m1(s1, s2);
-	MatchingSchema m1;
+	MatchingSchema m1(s1, s2);
 	cout << evolutionStrategy(1000, 10, 10, true, m1) << endl;
 	return 0;
 }
