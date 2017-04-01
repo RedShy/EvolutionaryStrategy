@@ -7,6 +7,7 @@
 #include <queue>
 using namespace std;
 
+unsigned n = 0;
 struct MatchingSchema
 {
 		MatchingSchema(const vector<unsigned>&_sigma_1,
@@ -51,6 +52,7 @@ struct MatchingSchema
 			//TODO calculate edit distance for this matching schema, maybe has to be done outside of this class?
 
 			costValue = rand() % 999999999;
+			n++;
 		}
 
 		bool operator<(const MatchingSchema& m) const
@@ -188,8 +190,8 @@ vector<MatchingSchema> selectBestIndividuals(unsigned mu,
 int main()
 {
 	srand(unsigned(time(0)));
-	unsigned A1 = 250;
-	unsigned A2 = 200;
+	unsigned A1 = 500;
+	unsigned A2 = 500;
 	vector<unsigned> s1;
 	for (unsigned i = 0; i < A1; i++)
 	{
@@ -201,6 +203,12 @@ int main()
 		s2.push_back(i);
 	}
 	MatchingSchema m1(s1, s2);
-	cout << evolutionStrategy(10000, 20, 20, true, m1) << endl;
+	clock_t begin = clock();
+
+	cout << evolutionStrategy(10000, 50, 50, true, m1) << endl;
+
+	clock_t end = clock();
+	cout << double(end - begin) / CLOCKS_PER_SEC << endl;
+	cout << n << endl;
 	return 0;
 }
