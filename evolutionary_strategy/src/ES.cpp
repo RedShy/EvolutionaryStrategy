@@ -86,7 +86,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 			startingMatchingSchema.calculateCost();
 
 			parents.push_back(startingMatchingSchema);
-			push_heap(parents.begin(), parents.end());
+//			push_heap(parents.begin(), parents.end());
 		}
 		else
 		{
@@ -117,7 +117,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 				child.calculateCost();
 
 				children.push_back(child);
-				push_heap(children.begin(), children.end());
+//				push_heap(children.begin(), children.end());
 			}
 			else
 			{
