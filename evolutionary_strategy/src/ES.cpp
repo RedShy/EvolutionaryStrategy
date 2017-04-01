@@ -188,15 +188,19 @@ vector<MatchingSchema> selectBestIndividuals(unsigned mu,
 int main()
 {
 	srand(unsigned(time(0)));
+	unsigned A1 = 250;
+	unsigned A2 = 200;
 	vector<unsigned> s1;
-	s1.push_back(1);
-	s1.push_back(2);
-	s1.push_back(3);
+	for (unsigned i = 0; i < A1; i++)
+	{
+		s1.push_back(i);
+	}
 	vector<unsigned> s2;
-	s2.push_back(4);
-	s2.push_back(5);
-	s2.push_back(6);
+	for (unsigned i = 0; i < A2; i++)
+	{
+		s2.push_back(i);
+	}
 	MatchingSchema m1(s1, s2);
-	cout << evolutionStrategy(1000, 10, 10, true, m1) << endl;
+	cout << evolutionStrategy(10000, 20, 20, true, m1) << endl;
 	return 0;
 }
