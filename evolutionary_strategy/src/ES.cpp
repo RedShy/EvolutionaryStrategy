@@ -3,12 +3,14 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 using namespace std;
 
 struct MatchingSchema
 {
 		vector<unsigned> sigma_1;
 		vector<unsigned> sigma_2;
+		unsigned costValue;
 		void shuffle()
 		{
 			random_shuffle(sigma_1.begin(), sigma_1.end());
@@ -36,6 +38,12 @@ struct MatchingSchema
 			sigma_2[i_2] = temp;
 		}
 
+		void calculateCost()
+		{
+			//TODO calculate edit distance for this matching schema, maybe has to be done outside of this class?
+
+			costValue = rand() % 999999999999;
+		}
 
 };
 
@@ -51,6 +59,8 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 		MatchingSchema startingMatchingSchema)
 {
 	unsigned generation = 0;
+	unsigned min = numeric_limits<unsigned int>::max();
+	MatchingSchema best;
 
 	//Generate mu random individuals
 	vector<MatchingSchema> parents;
@@ -78,6 +88,16 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 			//validate child
 			if (isValid(child))
 			{
+
+				child.calculateCost();
+
+				//New valid child, maybe better than anyone?
+				if (child.costValue < min)
+				{
+					min = child.costValue;
+					best = child;
+				}
+
 				children.push_back(child);
 			}
 			else
@@ -105,7 +125,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 	}
 
 	//TODO return best of all
-	return 0;
+	return best.costValue;
 }
 
 bool isValid(MatchingSchema m)
