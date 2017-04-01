@@ -6,3 +6,7 @@ togliere vectors e mettere new unsigned*
 
 Trovare algoritmo per selezionare i migliori individui tra parents+children
 
+Anziché avere due array, provare ad usare un singolo array diviso da due indici per indicare dove finiscono i parents e dove finiscono i children
+[ parents | children]
+  <---->    <----> 
+   mu        lambda

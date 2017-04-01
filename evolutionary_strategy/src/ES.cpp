@@ -63,10 +63,8 @@ struct MatchingSchema
 };
 
 bool isValid(MatchingSchema m);
-vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		vector<MatchingSchema>& parents, vector<MatchingSchema>& children);
-vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		vector<MatchingSchema>& children);
+vector<MatchingSchema> selectBestIndividuals(const unsigned mu,
+		vector<MatchingSchema>& individuals, const bool plusSelection);
 
 unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 		const unsigned lambda, const bool plusSelection,
@@ -96,7 +94,6 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 		}
 	}
 
-	vector<MatchingSchema> children;
 	while (generation <= max_generations)
 	{
 		//Generate lambda children. Only mutation, no recombination
@@ -116,7 +113,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 			{
 				child.calculateCost();
 
-				children.push_back(child);
+				parents.push_back(child);
 //				push_heap(children.begin(), children.end());
 			}
 			else
@@ -127,19 +124,10 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 			}
 		}
 
-		if (plusSelection)
-		{
-			//Select mu parents for next generation from parents+children
-			parents = selectBestIndividuals(mu, parents, children);
-		}
-		else
-		{
-			//Comma selection
-			//Select mu parents for next generation from children
-			parents = selectBestIndividuals(mu, children);
-		}
 
-		children.clear();
+		parents = selectBestIndividuals(mu, parents, plusSelection);
+
+
 		generation++;
 	}
 
@@ -153,35 +141,25 @@ bool isValid(MatchingSchema m)
 	return true;
 }
 
-vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		vector<MatchingSchema>& parents, vector<MatchingSchema>& children)
+vector<MatchingSchema> selectBestIndividuals(const unsigned mu,
+		vector<MatchingSchema>& individuals, const bool plusSelection)
 {
 	//TODO using a heap
-
-	//merge the two heaps, silly algorithm
-	while (parents.size() != 0)
-	{
-		children.push_back(parents.back());
-		parents.pop_back();
-	}
-
-	make_heap(children.begin(), children.end());
-
-	return selectBestIndividuals(mu, children);
-
-}
-vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		vector<MatchingSchema>& children)
-{
-	//TODO using a heap
-
 	vector<MatchingSchema> bestIndividuals;
-
-	for (unsigned i = 0; i < mu; i++)
+	if (plusSelection)
 	{
-		pop_heap(children.begin(), children.end());
-		bestIndividuals.push_back(children.back());
-		children.pop_back();
+		make_heap(individuals.begin(), individuals.end());
+
+		for (unsigned i = 0; i < mu; i++)
+		{
+			pop_heap(individuals.begin(), individuals.end());
+			bestIndividuals.push_back(individuals.back());
+			individuals.pop_back();
+		}
+	}
+	else
+	{
+		//TODO Comma selection
 	}
 
 	return bestIndividuals;
