@@ -9,6 +9,19 @@ using namespace std;
 
 struct MatchingSchema
 {
+
+//		MatchingSchema()
+//		{
+//
+//		}
+//
+//		MatchingSchema(const vector<unsigned>&_sigma_1,
+//				const vector<unsigned>&_sigma_2) :
+//				sigma_1(_sigma_1), sigma_2(_sigma_2)
+//		{
+//
+//		}
+
 		vector<unsigned> sigma_1;
 		vector<unsigned> sigma_2;
 		unsigned costValue;
@@ -23,16 +36,16 @@ struct MatchingSchema
 			//Perform a single, simple swap of two indices for every vector
 
 			//first vector
-			unsigned i_1 = rand() % sigma_1;
-			unsigned i_2 = rand() % sigma_1;
+			unsigned i_1 = rand() % sigma_1.size();
+			unsigned i_2 = rand() % sigma_1.size();
 
 			unsigned temp = sigma_1[i_1];
 			sigma_1[i_1] = sigma_1[i_2];
 			sigma_1[i_2] = temp;
 
 			//second vector
-			i_1 = rand() % sigma_2;
-			i_2 = rand() % sigma_2;
+			i_1 = rand() % sigma_2.size();
+			i_2 = rand() % sigma_2.size();
 
 			temp = sigma_2[i_1];
 			sigma_2[i_1] = sigma_2[i_2];
@@ -43,7 +56,7 @@ struct MatchingSchema
 		{
 			//TODO calculate edit distance for this matching schema, maybe has to be done outside of this class?
 
-			costValue = rand() % 999999999999;
+			costValue = rand() % 999999999;
 		}
 
 		bool operator<(const MatchingSchema& m) const
@@ -55,10 +68,9 @@ struct MatchingSchema
 
 bool isValid(MatchingSchema m);
 vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		const vector<MatchingSchema>& parents,
-		const vector<MatchingSchema>& children);
+		vector<MatchingSchema>& parents, vector<MatchingSchema>& children);
 vector<MatchingSchema> selectBestIndividuals(unsigned mu,
-		const vector<MatchingSchema>& children);
+		vector<MatchingSchema>& children);
 
 unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 		const unsigned lambda, const bool plusSelection,
@@ -182,5 +194,16 @@ vector<MatchingSchema> selectBestIndividuals(unsigned mu,
 int main()
 {
 	srand(unsigned(time(0)));
+	vector<unsigned> s1;
+	s1.push_back(1);
+	s1.push_back(2);
+	s1.push_back(3);
+	vector<unsigned> s2;
+	s2.push_back(4);
+	s2.push_back(5);
+	s2.push_back(6);
+//	MatchingSchema m1(s1, s2);
+	MatchingSchema m1;
+	cout << evolutionStrategy(1000, 10, 10, true, m1) << endl;
 	return 0;
 }
