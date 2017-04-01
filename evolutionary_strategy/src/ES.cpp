@@ -132,6 +132,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 	}
 
 	//TODO return best of all
+	make_heap(parents.begin(), parents.end());
 	return parents.front().costValue;
 }
 
