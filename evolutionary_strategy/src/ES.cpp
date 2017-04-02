@@ -74,7 +74,7 @@ unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
 
 	//Generate mu random individuals
 	vector<MatchingSchema> parents;
-	for (unsigned i = 0; i < mu; i++)
+	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMatchingSchema.shuffle();
 
