@@ -10,7 +10,7 @@
 #include "MatchingSchema.h"
 
 
-bool isValid(ES_MatchingSchema m);
+bool ES_isValid(ES_MatchingSchema m);
 std::vector<ES_MatchingSchema> selectBestIndividuals(const unsigned mu,
 		std::vector<ES_MatchingSchema>& individuals, const bool plusSelection);
 
@@ -27,20 +27,27 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 {
 	unsigned generation = 0;
 
-	ES_MatchingSchema startingMatchingSchema(sig1, sig2);
+	//TODO temporay for edit distance with diagonal
+	unsigned threshold = std::numeric_limits<unsigned int>::max();
+
+	ES_MatchingSchema startingMS(sig1, sig2);
 
 	//Generate mu random individuals
 	std::vector<ES_MatchingSchema> parents;
 	for (unsigned i = 0; i < mu; ++i)
 	{
-		startingMatchingSchema.shuffle();
+		startingMS.shuffle();
 
 		//validate matching schema
-		if (isValid(startingMatchingSchema))
+		if (ES_isValid(startingMS))
 		{
-			startingMatchingSchema.calculateCost();
+//			startingMS.calculateCost();
 
-			parents.push_back(startingMatchingSchema);
+			startingMS.costValue =
+					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
+							s2, s1l, s2l, startingMS.sigma1, startingMS.sigma2,
+							sig1l, sig2l, m, threshold);
+			parents.push_back(startingMS);
 //			push_heap(parents.begin(), parents.end());
 		}
 		else
@@ -66,9 +73,14 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 			child.mutate();
 
 			//validate child
-			if (isValid(child))
+			if (ES_isValid(child))
 			{
-				child.calculateCost();
+//				child.calculateCost();
+
+				child.costValue =
+						e.edit_distance_matching_schema_enhanced_with_diagonal(
+								s1, s2, s1l, s2l, child.sigma1, child.sigma2,
+								sig1l, sig2l, m, threshold);
 
 				parents.push_back(child);
 //				push_heap(children.begin(), children.end());
@@ -93,7 +105,7 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 	return parents.front().costValue;
 }
 
-bool isValid(ES_MatchingSchema m)
+bool ES_isValid(ES_MatchingSchema m)
 {
 	//TODO validate a matching schema
 	return true;

@@ -12,18 +12,30 @@ struct ES_MatchingSchema
 {
 		ES_MatchingSchema(const std::vector<unsigned>&_sigma_1,
 				const std::vector<unsigned>&_sigma_2) :
-				sigma_1(_sigma_1), sigma_2(_sigma_2), costValue(0)
+				costValue(0), sigma1l(
+						_sigma_1.size()), sigma2l(_sigma_2.size())
 		{
+			sigma1 = new unsigned[_sigma_1.size()];
+			std::iota(sigma1, sigma1 + _sigma_1.size(), 0);
 
+			sigma2 = new unsigned[_sigma_2.size()];
+			std::iota(sigma2, sigma2 + _sigma_2.size(), 0);
 		}
 
-		std::vector<unsigned> sigma_1;
-		std::vector<unsigned> sigma_2;
-		unsigned costValue;
+		ES_MatchingSchema(const ES_MatchingSchema& m) :
+				sigma1l(m.sigma1l), sigma2l(m.sigma2l), costValue(m.costValue)
+		{
+			sigma1 = new unsigned[sigma1l];
+			std::copy(m.sigma1, m.sigma1 + sigma1l, sigma1);
+
+			sigma2 = new unsigned[sigma2l];
+			std::copy(m.sigma2, m.sigma2 + sigma2l, sigma2);
+		}
+
 		void shuffle()
 		{
-			random_shuffle(sigma_1.begin(), sigma_1.end());
-			random_shuffle(sigma_2.begin(), sigma_2.end());
+			std::random_shuffle(sigma1, sigma1 + sigma1l);
+			std::random_shuffle(sigma2, sigma2 + sigma2l);
 		}
 
 		void mutate()
@@ -31,20 +43,20 @@ struct ES_MatchingSchema
 			//Perform a single, simple swap of two indices for every vector
 
 			//first vector
-			unsigned i_1 = rand() % sigma_1.size();
-			unsigned i_2 = rand() % sigma_1.size();
+			unsigned i_1 = rand() % sigma1l;
+			unsigned i_2 = rand() % sigma1l;
 
-			unsigned temp = sigma_1[i_1];
-			sigma_1[i_1] = sigma_1[i_2];
-			sigma_1[i_2] = temp;
+			unsigned temp = sigma1[i_1];
+			sigma1[i_1] = sigma1[i_2];
+			sigma1[i_2] = temp;
 
 			//second vector
-			i_1 = rand() % sigma_2.size();
-			i_2 = rand() % sigma_2.size();
+			i_1 = rand() % sigma2l;
+			i_2 = rand() % sigma2l;
 
-			temp = sigma_2[i_1];
-			sigma_2[i_1] = sigma_2[i_2];
-			sigma_2[i_2] = temp;
+			temp = sigma2[i_1];
+			sigma2[i_1] = sigma2[i_2];
+			sigma2[i_2] = temp;
 		}
 
 		void calculateCost()
@@ -59,6 +71,25 @@ struct ES_MatchingSchema
 			return this->costValue >= m.costValue;
 		}
 
+		ES_MatchingSchema& operator=(const ES_MatchingSchema& m)
+		{
+			sigma1l = m.sigma1l;
+			sigma1 = new unsigned[sigma1l];
+			std::copy(m.sigma1, m.sigma1 + sigma1l, sigma1);
+
+			sigma2l = m.sigma2l;
+			sigma2 = new unsigned[sigma2l];
+			std::copy(m.sigma2, m.sigma2 + sigma2l, sigma2);
+			return *this;
+		}
+
+		unsigned* sigma1;
+		size_t sigma1l;
+
+		unsigned* sigma2;
+		size_t sigma2l;
+
+		unsigned costValue;
 };
 
 
