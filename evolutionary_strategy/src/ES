@@ -132,27 +132,27 @@ std::vector<ES_MatchingSchema> selectBestIndividuals(const unsigned mu,
 	return bestIndividuals;
 }
 
-int main()
-{
-	srand(unsigned(time(0)));
-	unsigned A1 = 500;
-	unsigned A2 = 500;
-	std::vector<unsigned> s1;
-	for (unsigned i = 0; i < A1; i++)
-	{
-		s1.push_back(i);
-	}
-	std::vector<unsigned> s2;
-	for (unsigned i = 0; i < A2; i++)
-	{
-		s2.push_back(i);
-	}
-	ES_MatchingSchema m1(s1, s2);
-	clock_t begin = clock();
-
-//	cout << evolutionStrategy(10000, 50, 50, true, m1) << endl;
-
-	clock_t end = clock();
-	std::cout << double(end - begin) / CLOCKS_PER_SEC << std::endl;
-	return 0;
-}
+//int main()
+//{
+//	srand(unsigned(time(0)));
+//	unsigned A1 = 500;
+//	unsigned A2 = 500;
+//	std::vector<unsigned> s1;
+//	for (unsigned i = 0; i < A1; i++)
+//	{
+//		s1.push_back(i);
+//	}
+//	std::vector<unsigned> s2;
+//	for (unsigned i = 0; i < A2; i++)
+//	{
+//		s2.push_back(i);
+//	}
+//	ES_MatchingSchema m1(s1, s2);
+//	clock_t begin = clock();
+//
+////	cout << evolutionStrategy(10000, 50, 50, true, m1) << endl;
+//
+//	clock_t end = clock();
+//	std::cout << double(end - begin) / CLOCKS_PER_SEC << std::endl;
+//	return 0;
+//}
