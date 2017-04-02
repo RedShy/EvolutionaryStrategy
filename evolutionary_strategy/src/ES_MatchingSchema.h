@@ -8,9 +8,9 @@
 #define SRC_ES_MATCHINGSCHEMA_H_
 #include<vector>
 
-struct ES2_MatchingSchema
+struct ES_MatchingSchema
 {
-		ES2_MatchingSchema(const std::vector<unsigned>&_sigma_1,
+		ES_MatchingSchema(const std::vector<unsigned>&_sigma_1,
 				const std::vector<unsigned>&_sigma_2) :
 				costValue(0), sigma1l(
 						_sigma_1.size()), sigma2l(_sigma_2.size())
@@ -22,7 +22,7 @@ struct ES2_MatchingSchema
 			std::iota(sigma2, sigma2 + _sigma_2.size(), 0);
 		}
 
-		ES2_MatchingSchema(const ES2_MatchingSchema& m) :
+		ES_MatchingSchema(const ES_MatchingSchema& m) :
 				sigma1l(m.sigma1l), sigma2l(m.sigma2l), costValue(m.costValue)
 		{
 			sigma1 = new unsigned[sigma1l];
@@ -66,12 +66,12 @@ struct ES2_MatchingSchema
 			costValue = rand() % 999999999;
 		}
 
-		bool operator<(const ES2_MatchingSchema& m) const
+		bool operator<(const ES_MatchingSchema& m) const
 		{
 			return this->costValue >= m.costValue;
 		}
 
-		ES2_MatchingSchema& operator=(const ES2_MatchingSchema& m)
+		ES_MatchingSchema& operator=(const ES_MatchingSchema& m)
 		{
 			sigma1l = m.sigma1l;
 			sigma1 = new unsigned[sigma1l];
@@ -82,6 +82,14 @@ struct ES2_MatchingSchema
 			std::copy(m.sigma2, m.sigma2 + sigma2l, sigma2);
 			return *this;
 		}
+
+		~ES_MatchingSchema()
+		{
+			delete[] sigma1;
+			delete[] sigma2;
+		}
+
+
 
 		unsigned* sigma1;
 		size_t sigma1l;
