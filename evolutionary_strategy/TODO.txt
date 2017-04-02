@@ -10,3 +10,5 @@ Anziché avere due array, provare ad usare un singolo array diviso da due indici 
 [ parents | children]
   <---->    <----> 
    mu        lambda
+   
+Creare variante (1+1)-ES che usa l'enanched diagonal ed
