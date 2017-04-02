@@ -160,7 +160,17 @@ vector<MatchingSchema> selectBestIndividuals(const unsigned mu,
 	}
 	else
 	{
-		//TODO Comma selection
+		//start from mu instead of 0
+		vector<MatchingSchema>::iterator it = individuals.begin();
+		it += mu;
+		make_heap(it, individuals.end());
+
+		for (unsigned i = 0; i < mu; i++)
+		{
+			pop_heap(it, individuals.end());
+			bestIndividuals.push_back(individuals.back());
+			individuals.pop_back();
+		}
 	}
 
 	return bestIndividuals;
