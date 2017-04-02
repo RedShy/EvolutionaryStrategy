@@ -10,9 +10,9 @@
 #include "MatchingSchema.h"
 
 
-bool ES_isValid(ES_MatchingSchema m);
-std::vector<ES_MatchingSchema> selectBestIndividuals(const unsigned mu,
-		std::vector<ES_MatchingSchema>& individuals, const bool plusSelection);
+bool ES_isValid(ES2_MatchingSchema m);
+std::vector<ES2_MatchingSchema> selectBestIndividuals(const unsigned mu,
+		std::vector<ES2_MatchingSchema>& individuals, const bool plusSelection);
 
 int evolutionStrategy(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
@@ -27,13 +27,10 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 {
 	unsigned generation = 0;
 
-	//TODO temporay for edit distance with diagonal
-	unsigned threshold = std::numeric_limits<unsigned int>::max();
-
-	ES_MatchingSchema startingMS(sig1, sig2);
+	ES2_MatchingSchema startingMS(sig1, sig2);
 
 	//Generate mu random individuals
-	std::vector<ES_MatchingSchema> parents;
+	std::vector<ES2_MatchingSchema> parents;
 	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMS.shuffle();
@@ -44,9 +41,9 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 //			startingMS.calculateCost();
 
 			startingMS.costValue =
-					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
+					e.edit_distance_matching_schema_enhanced(s1,
 							s2, s1l, s2l, startingMS.sigma1, startingMS.sigma2,
-							sig1l, sig2l, m, threshold);
+							sig1l, sig2l, m);
 			parents.push_back(startingMS);
 //			push_heap(parents.begin(), parents.end());
 		}
@@ -67,7 +64,7 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 			unsigned p = rand() % mu;
 
 			//Produce child, in the case parents=1 (like this) just clone
-			ES_MatchingSchema child = parents[p];
+			ES2_MatchingSchema child = parents[p];
 
 			//mutate child
 			child.mutate();
@@ -78,9 +75,9 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 //				child.calculateCost();
 
 				child.costValue =
-						e.edit_distance_matching_schema_enhanced_with_diagonal(
+						e.edit_distance_matching_schema_enhanced(
 								s1, s2, s1l, s2l, child.sigma1, child.sigma2,
-								sig1l, sig2l, m, threshold);
+								sig1l, sig2l, m);
 
 				parents.push_back(child);
 //				push_heap(children.begin(), children.end());
@@ -105,17 +102,17 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 	return parents.front().costValue;
 }
 
-bool ES_isValid(ES_MatchingSchema m)
+bool ES_isValid(ES2_MatchingSchema m)
 {
 	//TODO validate a matching schema
 	return true;
 }
 
-std::vector<ES_MatchingSchema> selectBestIndividuals(const unsigned mu,
-		std::vector<ES_MatchingSchema>& individuals, const bool plusSelection)
+std::vector<ES2_MatchingSchema> selectBestIndividuals(const unsigned mu,
+		std::vector<ES2_MatchingSchema>& individuals, const bool plusSelection)
 {
 	//TODO using a heap
-	std::vector<ES_MatchingSchema> bestIndividuals;
+	std::vector<ES2_MatchingSchema> bestIndividuals;
 	if (plusSelection)
 	{
 		make_heap(individuals.begin(), individuals.end());
@@ -150,7 +147,7 @@ int main()
 	{
 		s2.push_back(i);
 	}
-	ES_MatchingSchema m1(s1, s2);
+	ES2_MatchingSchema m1(s1, s2);
 	clock_t begin = clock();
 
 //	cout << evolutionStrategy(10000, 50, 50, true, m1) << endl;

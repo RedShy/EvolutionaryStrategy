@@ -8,9 +8,9 @@
 #define SRC_ES_MATCHINGSCHEMA_H_
 #include<vector>
 
-struct ES_MatchingSchema
+struct ES2_MatchingSchema
 {
-		ES_MatchingSchema(const std::vector<unsigned>&_sigma_1,
+		ES2_MatchingSchema(const std::vector<unsigned>&_sigma_1,
 				const std::vector<unsigned>&_sigma_2) :
 				costValue(0), sigma1l(
 						_sigma_1.size()), sigma2l(_sigma_2.size())
@@ -22,7 +22,7 @@ struct ES_MatchingSchema
 			std::iota(sigma2, sigma2 + _sigma_2.size(), 0);
 		}
 
-		ES_MatchingSchema(const ES_MatchingSchema& m) :
+		ES2_MatchingSchema(const ES2_MatchingSchema& m) :
 				sigma1l(m.sigma1l), sigma2l(m.sigma2l), costValue(m.costValue)
 		{
 			sigma1 = new unsigned[sigma1l];
@@ -66,12 +66,12 @@ struct ES_MatchingSchema
 			costValue = rand() % 999999999;
 		}
 
-		bool operator<(const ES_MatchingSchema& m) const
+		bool operator<(const ES2_MatchingSchema& m) const
 		{
 			return this->costValue >= m.costValue;
 		}
 
-		ES_MatchingSchema& operator=(const ES_MatchingSchema& m)
+		ES2_MatchingSchema& operator=(const ES2_MatchingSchema& m)
 		{
 			sigma1l = m.sigma1l;
 			sigma1 = new unsigned[sigma1l];
