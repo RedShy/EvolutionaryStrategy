@@ -6,17 +6,28 @@
 #include <limits>
 #include <queue>
 #include "ES_MatchingSchema.h"
+#include "EditDistance.h"
+#include "MatchingSchema.h"
 
 
 bool isValid(ES_MatchingSchema m);
 std::vector<ES_MatchingSchema> selectBestIndividuals(const unsigned mu,
 		std::vector<ES_MatchingSchema>& individuals, const bool plusSelection);
 
-unsigned evolutionStrategy(const unsigned max_generations, const unsigned mu,
-		const unsigned lambda, const bool plusSelection,
-		ES_MatchingSchema startingMatchingSchema)
+int evolutionStrategy(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l,
+
+		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
+
+		const unsigned max_generations, const unsigned mu,
+		const unsigned lambda, const bool plusSelection)
 {
 	unsigned generation = 0;
+
+	ES_MatchingSchema startingMatchingSchema(sig1, sig2);
 
 	//Generate mu random individuals
 	std::vector<ES_MatchingSchema> parents;
