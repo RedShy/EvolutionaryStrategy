@@ -73,12 +73,23 @@ struct ES_MatchingSchema
 
 		ES_MatchingSchema& operator=(const ES_MatchingSchema& m)
 		{
-			sigma1l = m.sigma1l;
-			sigma1 = new unsigned[sigma1l];
+			costValue = m.costValue;
+
+			//TODO: we can assume that every child has the same simgas length
+//			if(sigma1l!=m.sigma1l)
+//			{
+//				sigma1l = m.sigma1l;
+//				delete[] sigma1;
+//				sigma1 = new unsigned[sigma1l];
+//			}
 			std::copy(m.sigma1, m.sigma1 + sigma1l, sigma1);
 
-			sigma2l = m.sigma2l;
-			sigma2 = new unsigned[sigma2l];
+//			if(sigma2l!=m.sigma2l)
+//			{
+//				sigma2l = m.sigma2l;
+//				delete[] sigma2;
+//				sigma2 = new unsigned[sigma2l];
+//			}
 			std::copy(m.sigma2, m.sigma2 + sigma2l, sigma2);
 			return *this;
 		}
