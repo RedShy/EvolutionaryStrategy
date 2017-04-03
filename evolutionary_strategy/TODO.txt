@@ -28,4 +28,6 @@ MPED   ms  generazioni
 Vai avanti finché la tua efficienza economica si mantiene sopra un threshold dato in input, se scende al disotto, fermati
 
 
-Trovare rapporto ottimale padre e figli per (mu+lambda)-ES
+Trovare rapporto ottimale padre e figli per (mu+lambda)-ES FONTE: introduction to ES. mu/lambda= 0.270
+
+Se si potesse salvare il calcolo dell'edit distance per un dato matching schema, anziché calcolarlo ogni volta, sarebbe ottimo
