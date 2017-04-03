@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 100);
 		}
 		else if (heuristic == _ES_ONE_LAMBDA_ARG)
 		{
