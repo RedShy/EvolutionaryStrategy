@@ -12,3 +12,5 @@ Anziché avere due array, provare ad usare un singolo array diviso da due indici 
    mu        lambda
    
 Creare variante (1+1)-ES che usa l'enanched diagonal ed
+
+Per le varianti (1+1)-ES e (1+lambda)-ES fare in modo che, se dopo N generazioni non migliora, stoppare tutto, oppure fare uno shuffle del figlio completamente casuale.

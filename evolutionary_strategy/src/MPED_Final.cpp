@@ -23,6 +23,7 @@ const std::string _HC_ARG("hc");
 const std::string _BRUTEFORCE_ARG("ex");
 const std::string _ES_ARG("es");
 const std::string _ES_ONE_ONE_ARG("es_one_one");
+const std::string _ES_ONE_ONE_RS_ARG("es_one_one_rs");
 const std::string _ES_ONE_LAMBDA_ARG("es_one_lambda");
 const std::string _SPECIFIC_PMS("specific-permutations");
 const std::string _SPECIFIC_MMS("specific-matrix");
@@ -49,6 +50,16 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 		const unsigned lambda, const bool plusSelection);
 
 int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l,
+
+		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
+
+		const unsigned max_generations);
+
+int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
@@ -200,16 +211,21 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
-					sigma1l, sigma2l, p1, ms, e, 5, 1, 1, true);
+					sigma1l, sigma2l, p1, ms, e, 10, 10, 100, true);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 1000);
 		}
 		else if (heuristic == _ES_ONE_LAMBDA_ARG)
 		{
 			//TODO
+		}
+		else if (heuristic == _ES_ONE_ONE_RS_ARG)
+		{
+			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 1000);
 		}
 		clock_t timeElapsed = clock() - start;
 		msElapsed = timeElapsed / CLOCKS_PER_MS;
@@ -460,6 +476,76 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 
 	//TODO return best of all
 	return parent.costValue;
+}
+
+int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l,
+
+		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
+
+		const unsigned max_generations)
+{
+	unsigned generation = 0;
+	unsigned plateu = 0;
+
+	ES_MatchingSchema best;
+
+	ES_MatchingSchema parent(sig1, sig2);
+
+	//Random start
+	parent.shuffle();
+
+	parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
+			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+	while (generation <= max_generations)
+	{
+		//Produce child
+		ES_MatchingSchema child = parent;
+
+		//mutate child
+		child.mutate();
+
+		//validate child
+		if (ES_isValid(child))
+		{
+			int newDistance =
+					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
+							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
+							sig2l, m, best.costValue);
+			if (newDistance != -1)
+			{
+				//The child is better than its father, so he become new parent
+				parent = child;
+
+				plateu = 0;
+				best = parent;
+			}
+			else
+			{
+				plateu++;
+				if (plateu == 5)
+				{
+					plateu = 0;
+					parent.shuffle();
+				}
+			}
+			//else the child is worse than its father so he is discarded
+		}
+		else
+		{
+			//TODO: not valid, maybe mutate until is valid?
+			//repeat iteration
+			continue;
+		}
+
+		generation++;
+	}
+
+	//TODO return best of all
+	return best.costValue;
 }
 
 int hill_climbing(const std::vector<unsigned>& s1,
