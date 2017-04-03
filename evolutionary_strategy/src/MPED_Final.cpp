@@ -20,6 +20,7 @@
 const unsigned short _ASCII_LEN = 255 - 0;
 const bool _DEBUG = false;
 const std::string _HC_ARG("hc");
+const std::string _HCD_ARG("hcd");
 const std::string _BRUTEFORCE_ARG("ex");
 const std::string _ES_ARG("es");
 const std::string _ES_ONE_ONE_ARG("es_one_one");
@@ -73,6 +74,13 @@ int hill_climbing(const std::vector<unsigned>&, const std::vector<unsigned>&,
 		const size_t&, const size_t&, const std::vector<unsigned>&,
 		const std::vector<unsigned>&, const size_t&, const size_t&,
 		const size_t&, matching_schema<bool>&, edit_distance&);
+
+int hill_climbing_d(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l, const size_t& p1,
+		matching_schema<bool>& m, edit_distance& e);
+
 int bruteforce(const std::vector<unsigned>&, const std::vector<unsigned>&,
 		const size_t&, const size_t&, const std::vector<unsigned>&,
 		const std::vector<unsigned>&, const size_t&, const size_t&,
@@ -209,10 +217,15 @@ int main(int argc, char *argv[])
 			distance = hill_climbing(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
 					sigma1l, sigma2l, p1, ms, e);
 		}
+		else if (heuristic == _HCD_ARG)
+		{
+			distance = hill_climbing_d(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
+					sigma1l, sigma2l, p1, ms, e);
+		}
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
-					sigma1l, sigma2l, p1, ms, e, 10, 10, 100, true);
+					sigma1l, sigma2l, p1, ms, e, 20, 10, 37, true);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
@@ -226,7 +239,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ONE_ONE_RS_ARG)
 		{
 			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 1000);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
 		}
 		clock_t timeElapsed = clock() - start;
 		msElapsed = timeElapsed / CLOCKS_PER_MS;
@@ -438,6 +451,8 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 	unsigned generation = 0;
 	unsigned plateu = 0;
 
+	const unsigned maxPlateu = 10;
+
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start
 	parent.shuffle();
@@ -463,13 +478,14 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
+				parent.costValue = newDistance;
 
 				plateu = 0;
 			}
 			else
 			{
 				plateu++;
-				if (plateu == 10)
+				if (plateu == maxPlateu)
 				{
 					break;
 				}
@@ -502,6 +518,11 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 {
 	unsigned generation = 0;
 	unsigned plateu = 0;
+//	unsigned metaPlateu = 0;
+	unsigned lastBest = std::numeric_limits<unsigned int>::max();
+	const unsigned threshold = 5;
+	const unsigned lapCheckPoint = 500;
+	const unsigned maxPlateu = 10;
 
 
 
@@ -521,17 +542,31 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		//mutate child
 		child.mutate();
 
+//		unsigned d = e.edit_distance_matching_schema_enhanced(s1, s2, s1l, s2l,
+//				child.sigma1, child.sigma2, sig1l, sig2l, m);
+//		std::cout << " REALchildValue= " << d << " parentValue= "
+//				<< parent.costValue << " bestValue= " << best.costValue << endl;
+
 		//validate child
 		if (ES_isValid(child))
 		{
+//			std::cout << " parentValueBEFOREEDIT= " << parent.costValue;
 			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
 							sig2l, m, parent.costValue);
+
+//			std::cout << " newDistance= " << newDistance << endl;
 			if (newDistance != -1)
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
+				parent.costValue = newDistance;
+
+//				std::cout << "AFTER ASSIGNENT" << " childValue= "
+//						<< child.costValue << " parentValue= "
+//						<< parent.costValue << " bestValue= " << best.costValue
+//						<< endl << endl;
 
 				plateu = 0;
 
@@ -539,15 +574,37 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 				if (parent.costValue < best.costValue)
 				{
 					best = parent;
+//					metaPlateu = 0;
 				}
 			}
 			else
 			{
 				plateu++;
-				if (plateu == 5)
+//				std::cout << "plateu= " << plateu << " WORSE!"
+//						<< " childValue= " << child.costValue
+//						<< " parentValue= " << parent.costValue
+//						<< " bestValue= " << best.costValue << endl;
+				if (plateu == maxPlateu)
 				{
 					plateu = 0;
+
+//					std::cout << "BEFORE SHUFFLE " << "costValue="
+//							<< parent.costValue << endl;
+//					parent.print();
 					parent.shuffle();
+					parent.costValue = e.edit_distance_matching_schema_enhanced(
+							s1, s2, s1l, s2l, parent.sigma1, parent.sigma2,
+							sig1l, sig2l, m);
+					if (parent.costValue < best.costValue)
+					{
+						best = parent;
+//						metaPlateu = 0;
+					}
+
+//					std::cout << "AFTER SHUFFLE" << "costValue="
+//							<< parent.costValue << endl;
+//					parent.print();
+
 				}
 			}
 			//else the child is worse than its father so he is discarded
@@ -560,6 +617,25 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		}
 
 		generation++;
+
+		//TODO experimental return on investiment
+		if (generation % lapCheckPoint == 0)
+		{
+			//few rendiment in the last checkpoint, so stop here
+			if (lastBest - best.costValue <= threshold)
+			{
+				break;
+			}
+
+			//new value for checkpoint
+			lastBest = best.costValue;
+		}
+
+//		metaPlateu++;
+//		if (metaPlateu == 1000)
+//		{
+//			break;
+//		}
 	}
 
 	//TODO return best of all
@@ -567,6 +643,159 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 }
 
 int hill_climbing(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l, const size_t& p1,
+		matching_schema<bool>& m, edit_distance& e)
+{
+
+	//std::cout << "enter the void (1)" << endl;
+
+	unsigned d = e.edit_distance_matching_schema(s1, s2, s1l, s2l, m);
+	unsigned minDist = d;
+	unsigned minMinDist = minDist;
+
+	//std::cout << "enter the void (2)" << endl;
+
+	// for the permutations
+	unsigned* sigma1_o = new unsigned[sig1l];
+	std::iota(sigma1_o, sigma1_o + sig1l, 0);
+	unsigned* sigma2_o = new unsigned[sig2l];
+	std::iota(sigma2_o, sigma2_o + sig2l, 0);
+	unsigned* sigma1_t = new unsigned[sig1l];
+	std::iota(sigma1_t, sigma1_t + sig1l, 0);
+	unsigned* sigma2_t = new unsigned[sig2l];
+	std::iota(sigma2_t, sigma2_t + sig2l, 0);
+
+	//std::cout << "enter the void (3)" << endl;
+
+	// for fixpoints
+	unsigned* sigma1_min = new unsigned[sig1l];
+	std::iota(sigma1_min, sigma1_min + sig1l, 0);
+	unsigned* sigma2_min = new unsigned[sig2l];
+	std::iota(sigma2_min, sigma2_min + sig2l, 0);
+	unsigned* sigma1_min_min = new unsigned[sig1l];
+	std::iota(sigma1_min_min, sigma1_min_min + sig1l, 0);
+	unsigned* sigma2_min_min = new unsigned[sig2l];
+	std::iota(sigma2_min_min, sigma2_min_min + sig2l, 0);
+
+	//std::cout << "enter the void (4)" << endl;
+
+	size_t attempts = 1, shuffle_tries = 2;
+	unsigned tries = 0, k_shuffle = 0;
+
+	//std::cout << "start: " << d << endl;
+
+	bool improved = true;
+	while (improved)
+	{
+		improved = false;
+
+		for (size_t ip = 0; ip < sig1l; ip++)
+		{
+			for (size_t jp = ip; jp < sig1l; jp++)
+			{
+
+				std::copy(sigma1_t, sigma1_t + sig1l, sigma1_o);// reset state
+				std::swap(sigma1_o[ip], sigma1_o[jp]);					// swap
+
+				if (isValid(sigma1_o, sig1l, p1))
+				{
+
+					for (size_t ipp = 0; ipp < sig2l; ipp++)
+					{
+						for (size_t jpp = ipp; jpp < sig2l; jpp++)
+						{
+
+							std::copy(sigma2_t, sigma2_t + sig2l, sigma2_o);// reset state
+							std::swap(sigma2_o[ipp], sigma2_o[jpp]);	// swap
+
+							int newDistance =
+									e.edit_distance_matching_schema_enhanced(
+											s1, s2, s1l, s2l, sigma1_o,
+											sigma2_o,
+											sig1l, sig2l, m);
+
+							if (newDistance != -1)
+							{
+								minDist = newDistance;
+
+								improved = true;
+								std::copy(sigma1_o, sigma1_o + sig1l,
+										sigma1_min);
+								std::copy(sigma2_o, sigma2_o + sig2l,
+										sigma2_min);
+
+							}
+						}
+						std::copy(sigma2_t, sigma2_t + sig2l, sigma2_o);
+					}
+
+				}
+			}
+		}
+
+		if (improved)
+		{
+			// copy sigmaMin to sigmaOrig
+			std::copy(sigma1_min, sigma1_min + sig1l, sigma1_o);
+			std::copy(sigma2_min, sigma2_min + sig2l, sigma2_o);
+			// copy sigmaOrig to sigmaTmp
+			std::copy(sigma1_o, sigma1_o + sig1l, sigma1_t);
+			std::copy(sigma2_o, sigma2_o + sig2l, sigma2_t);
+		}
+		else
+		{
+			if (minDist < minMinDist)
+			{
+				minMinDist = minDist;
+
+				// copy sigmaMin to sigmaMinMin
+				std::copy(sigma1_min, sigma1_min + sig1l, sigma1_min_min);
+				std::copy(sigma2_min, sigma2_min + sig2l, sigma2_min_min);
+
+				improved = true;
+				tries = 0;
+			}
+
+			if (tries < attempts)
+			{
+				improved = true;
+				tries++;
+
+				// random swap
+				// for sigma1, we try _SHUFFLE_TRIES times, then if is still not valid, we retry with the original one
+				for (k_shuffle = 0;
+						k_shuffle < shuffle_tries
+								&& !isValid(sigma1_t, sig1l, p1); ++k_shuffle)
+					shuffle(sigma1_t, sig1l);
+				if (k_shuffle == shuffle_tries) std::copy(sigma1_o,
+						sigma1_o + sig1l, sigma1_t);
+				// no constraints on the shuffle for sigma2
+				shuffle(sigma2_t, sig2l);
+
+				std::copy(sigma1_t, sigma1_t + sig1l, sigma1_o);
+				std::copy(sigma2_t, sigma2_t + sig2l, sigma2_o);
+
+				minDist = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
+						s2l, sigma1_o, sigma2_o, sig1l, sig2l, m);
+			}
+		}
+	}
+
+	delete[] sigma1_o;
+	delete[] sigma1_t;
+	delete[] sigma2_o;
+	delete[] sigma2_t;
+	delete[] sigma1_min;
+	delete[] sigma1_min_min;
+	delete[] sigma2_min;
+	delete[] sigma2_min_min;
+
+	return minMinDist;
+}
+
+int hill_climbing_d(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
 		const size_t& sig1l, const size_t& sig2l, const size_t& p1,
