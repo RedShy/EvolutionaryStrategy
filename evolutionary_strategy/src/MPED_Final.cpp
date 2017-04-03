@@ -2,6 +2,7 @@
 #include <map>
 #include <numeric>
 #include <string>
+#include <ctime>
 #include <vector>
 #include <bitset>
 #include "Alignment.h"
@@ -184,6 +185,7 @@ int main(int argc, char *argv[])
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 	{
+		clock_t begin = clock();
 		if (heuristic == _BRUTEFORCE_ARG)
 		{
 			distance = bruteforce(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
@@ -208,6 +210,8 @@ int main(int argc, char *argv[])
 		{
 			//TODO
 		}
+		clock_t end = clock();
+		std::cout << double(end - begin) / CLOCKS_PER_SEC << " ms ";
 	}
 	// For a specific matching schema
 	else
