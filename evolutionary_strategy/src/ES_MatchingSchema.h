@@ -100,6 +100,23 @@ struct ES_MatchingSchema
 			delete[] sigma2;
 		}
 
+		void print() const
+		{
+			std::cout << "sigma1= ";
+			for (unsigned i = 0; i < sigma1l; ++i)
+			{
+				std::cout << sigma1[i] << " ";
+			}
+			std::cout << std::endl;
+
+			std::cout << "sigma2= ";
+			for (unsigned i = 0; i < sigma2l; ++i)
+			{
+				std::cout << sigma2[i] << " ";
+			}
+			std::cout << std::endl;
+		}
+
 
 
 		unsigned* sigma1;
