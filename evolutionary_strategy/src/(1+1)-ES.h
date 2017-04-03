@@ -34,6 +34,8 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 	unsigned generation = 0;
 	unsigned plateu = 0;
 
+	const unsigned maxPlateu = 10;
+
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start
 	parent.shuffle();
@@ -63,15 +65,15 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 
 				plateu = 0;
 			}
-			else //the child is worse than its father so he is discarded
+			else
 			{
 				plateu++;
-				if (plateu == 10)
+				if (plateu == maxPlateu)
 				{
 					break;
 				}
 			}
-
+			//else the child is worse than its father so he is discarded
 		}
 		else
 		{
