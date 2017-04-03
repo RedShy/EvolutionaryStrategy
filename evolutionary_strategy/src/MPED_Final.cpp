@@ -81,6 +81,7 @@ int bruteforce(const std::vector<unsigned>&, const std::vector<unsigned>&,
 int main(int argc, char *argv[])
 {
 	std::ios_base::sync_with_stdio(false);
+//	srand(time(0));
 
 	// arguments: [hc|ex] p1 p2 [specific-permutations|specific-matrix]
 	// heuristic
@@ -435,6 +436,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 		const unsigned max_generations)
 {
 	unsigned generation = 0;
+	unsigned plateu = 0;
 
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start
@@ -461,6 +463,16 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
+
+				plateu = 0;
+			}
+			else
+			{
+				plateu++;
+				if (plateu == 10)
+				{
+					break;
+				}
 			}
 			//else the child is worse than its father so he is discarded
 		}
@@ -515,14 +527,19 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
-							sig2l, m, best.costValue);
+							sig2l, m, parent.costValue);
 			if (newDistance != -1)
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
 
 				plateu = 0;
-				best = parent;
+
+				//TODO maybe we can do better
+				if (parent.costValue < best.costValue)
+				{
+					best = parent;
+				}
 			}
 			else
 			{

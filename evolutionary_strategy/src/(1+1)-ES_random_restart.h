@@ -58,14 +58,19 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
-							sig2l, m, best.costValue);
+							sig2l, m, parent.costValue);
 			if (newDistance != -1)
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
 
 				plateu = 0;
-				best = parent;
+
+				//TODO maybe we can do better
+				if (parent.costValue < best.costValue)
+				{
+					best = parent;
+				}
 			}
 			else
 			{
