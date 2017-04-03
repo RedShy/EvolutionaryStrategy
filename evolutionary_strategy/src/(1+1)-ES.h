@@ -59,6 +59,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
+				parent.costValue = newDistance;
 
 				plateu = 0;
 			}
