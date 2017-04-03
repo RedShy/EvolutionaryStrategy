@@ -491,15 +491,16 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 	unsigned generation = 0;
 	unsigned plateu = 0;
 
-	ES_MatchingSchema best;
+
 
 	ES_MatchingSchema parent(sig1, sig2);
 
 	//Random start
 	parent.shuffle();
-
 	parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
 			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+
+	ES_MatchingSchema best = parent;
 	while (generation <= max_generations)
 	{
 		//Produce child
