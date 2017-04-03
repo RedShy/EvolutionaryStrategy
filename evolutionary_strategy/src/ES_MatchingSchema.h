@@ -103,10 +103,10 @@ struct ES_MatchingSchema
 
 
 		unsigned* sigma1;
-		size_t sigma1l;
+		const size_t& sigma1l;
 
 		unsigned* sigma2;
-		size_t sigma2l;
+		const size_t& sigma2l;
 
 		unsigned costValue;
 };
