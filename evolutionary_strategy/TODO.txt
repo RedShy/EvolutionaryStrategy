@@ -25,4 +25,7 @@ MPED   ms  generazioni
 365    93          100
 365    46           50
 
+Vai avanti finché la tua efficienza economica si mantiene sopra un threshold dato in input, se scende al disotto, fermati
+
+
 Trovare rapporto ottimale padre e figli per (mu+lambda)-ES
