@@ -62,7 +62,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 
 				plateu = 0;
 			}
-			else
+			else //the child is worse than its father so he is discarded
 			{
 				plateu++;
 				if (plateu == 10)
@@ -70,7 +70,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 					break;
 				}
 			}
-			//else the child is worse than its father so he is discarded
+
 		}
 		else
 		{
