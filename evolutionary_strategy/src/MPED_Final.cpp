@@ -14,6 +14,7 @@
 
 /* Definitions */
 #define endl '\n'
+#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
 /* Consts */
 const unsigned short _ASCII_LEN = 255 - 0;
@@ -185,7 +186,7 @@ int main(int argc, char *argv[])
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 	{
-		clock_t begin = clock();
+		clock_t start = clock();
 		if (heuristic == _BRUTEFORCE_ARG)
 		{
 			distance = bruteforce(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
@@ -204,14 +205,15 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 100);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 50);
 		}
 		else if (heuristic == _ES_ONE_LAMBDA_ARG)
 		{
 			//TODO
 		}
-		clock_t end = clock();
-		std::cout << double(end - begin) / CLOCKS_PER_SEC << " ms ";
+		clock_t timeElapsed = clock() - start;
+		unsigned msElapsed = timeElapsed / CLOCKS_PER_MS;
+		std::cout << msElapsed << " ms ";
 	}
 	// For a specific matching schema
 	else
