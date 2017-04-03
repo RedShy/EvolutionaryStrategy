@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 
 	/* here we call the solver needed */
 	int distance = -1;
-
+	double msElapsed = 0;
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 	{
@@ -212,8 +212,8 @@ int main(int argc, char *argv[])
 			//TODO
 		}
 		clock_t timeElapsed = clock() - start;
-		unsigned msElapsed = timeElapsed / CLOCKS_PER_MS;
-		std::cout << msElapsed << " ms ";
+		msElapsed = timeElapsed / CLOCKS_PER_MS;
+
 	}
 	// For a specific matching schema
 	else
@@ -272,8 +272,9 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	std::cout << distance << endl;
-
+	std::cout << distance;
+	std::cout << ' ' << msElapsed << "ms" << endl;
+	;
 	return 0;
 }
 
