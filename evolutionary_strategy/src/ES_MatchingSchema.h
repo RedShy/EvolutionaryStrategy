@@ -10,6 +10,11 @@
 
 struct ES_MatchingSchema
 {
+		ES_MatchingSchema()
+		{
+
+		}
+
 		ES_MatchingSchema(const std::vector<unsigned>&_sigma_1,
 				const std::vector<unsigned>&_sigma_2) :
 				costValue(0), sigma1l(
