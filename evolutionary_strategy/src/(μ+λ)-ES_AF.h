@@ -6,7 +6,7 @@
  */
 
 /*
- * (mu+lambda)-ES_WP.h
+ * (mu+lambda)-ES_AF.h
  *
  *  Created on: 04 apr 2017
  *      Author: RedShy
