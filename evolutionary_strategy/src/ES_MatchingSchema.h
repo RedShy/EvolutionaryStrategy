@@ -10,7 +10,8 @@
 
 struct ES_MatchingSchema
 {
-		ES_MatchingSchema()
+		ES_MatchingSchema() :
+				costValue(0), sigma1l(0), sigma2l(0), sigma1(NULL), sigma2(NULL)
 		{
 
 		}
@@ -81,20 +82,26 @@ struct ES_MatchingSchema
 			costValue = m.costValue;
 
 			//TODO: we can assume that every child has the same simgas length
-//			if(sigma1l!=m.sigma1l)
-//			{
-//				sigma1l = m.sigma1l;
-//				delete[] sigma1;
-//				sigma1 = new unsigned[sigma1l];
-//			}
+			if (sigma1l != m.sigma1l)
+			{
+				sigma1l = m.sigma1l;
+				if (sigma1 != NULL)
+				{
+					delete[] sigma1;
+				}
+				sigma1 = new unsigned[sigma1l];
+			}
 			std::copy(m.sigma1, m.sigma1 + sigma1l, sigma1);
 
-//			if(sigma2l!=m.sigma2l)
-//			{
-//				sigma2l = m.sigma2l;
-//				delete[] sigma2;
-//				sigma2 = new unsigned[sigma2l];
-//			}
+			if (sigma2l != m.sigma2l)
+			{
+				sigma2l = m.sigma2l;
+				if (sigma2 != NULL)
+				{
+					delete[] sigma2;
+				}
+				sigma2 = new unsigned[sigma2l];
+			}
 			std::copy(m.sigma2, m.sigma2 + sigma2l, sigma2);
 			return *this;
 		}
@@ -125,10 +132,10 @@ struct ES_MatchingSchema
 
 
 		unsigned* sigma1;
-		const size_t sigma1l;
+		size_t sigma1l;
 
 		unsigned* sigma2;
-		const size_t sigma2l;
+		size_t sigma2l;
 
 		unsigned costValue;
 };
