@@ -25,6 +25,7 @@ const std::string _BRUTEFORCE_ARG("ex");
 const std::string _ES_ARG("es");
 const std::string _ES_ONE_ONE_ARG("es_one_one");
 const std::string _ES_ONE_ONE_RS_ARG("es_one_one_rs");
+const std::string _ES_ONE_ONE_SRS_ARG("es_one_one_srs");
 const std::string _ES_ONE_LAMBDA_ARG("es_one_lambda");
 const std::string _ES_WP_ARG("es_wp");
 const std::string _ES_AF_ARG("es_af");
@@ -93,6 +94,16 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 
 		const unsigned max_generations, const unsigned mu,
 		const unsigned lambda);
+
+int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l,
+
+		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
+
+		const unsigned max_generations, const unsigned maxAttempts);
 
 int hill_climbing(const std::vector<unsigned>&, const std::vector<unsigned>&,
 		const size_t&, const size_t&, const std::vector<unsigned>&,
@@ -251,20 +262,6 @@ int main(int argc, char *argv[])
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
 					sigma1l, sigma2l, p1, ms, e, 20, 5, 18, true);
 		}
-		else if (heuristic == _ES_ONE_ONE_ARG)
-		{
-			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 1000);
-		}
-		else if (heuristic == _ES_ONE_LAMBDA_ARG)
-		{
-			//TODO
-		}
-		else if (heuristic == _ES_ONE_ONE_RS_ARG)
-		{
-			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
-		}
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
@@ -274,6 +271,26 @@ int main(int argc, char *argv[])
 		{
 			distance = evolutionStrategy_AF(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 5, 18);
+		}
+		else if (heuristic == _ES_ONE_ONE_ARG)
+		{
+			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 1000);
+		}
+		else if (heuristic == _ES_ONE_ONE_SRS_ARG)
+		{
+			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
+					sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10);
+		}
+		else if (heuristic == _ES_ONE_ONE_RS_ARG)
+		{
+			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
+		}
+		else if (heuristic == _ES_ONE_LAMBDA_ARG)
+		{
+			//TODO
 		}
 		clock_t timeElapsed = clock() - start;
 		msElapsed = timeElapsed / CLOCKS_PER_MS;
@@ -852,6 +869,90 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 	//TODO return best of all
 	std::make_heap(parents, parents + mu);
 	return parents[0].costValue;
+}
+
+int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
+		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
+
+		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
+		const size_t& sig1l, const size_t& sig2l,
+
+		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
+
+		const unsigned max_generations, const unsigned maxAttempts)
+{
+
+	const unsigned maxPlateu = 10;
+	unsigned attempts = 0;
+	ES_MatchingSchema parent(sig1, sig2);
+	//Random start
+	parent.shuffle();
+	parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
+			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+	ES_MatchingSchema best = parent;
+
+	while (attempts < maxAttempts)
+	{
+		unsigned generation = 0;
+		unsigned plateu = 0;
+
+		while (generation <= max_generations)
+		{
+			//Produce child
+			ES_MatchingSchema child = parent;
+
+			//mutate child
+			child.mutate();
+
+			//validate child
+			if (ES_isValid(child))
+			{
+				int newDistance =
+						e.edit_distance_matching_schema_enhanced_with_diagonal(
+								s1, s2, s1l, s2l, child.sigma1, child.sigma2,
+								sig1l, sig2l, m, parent.costValue);
+
+				if (newDistance != -1)
+				{
+					//The child is better than its father, so he become new parent
+					parent = child;
+					parent.costValue = newDistance;
+
+					plateu = 0;
+				}
+				else
+				{
+					plateu++;
+					if (plateu == maxPlateu)
+					{
+						break;
+					}
+				}
+				//else the child is worse than its father so he is discarded
+			}
+			else
+			{
+				//TODO: not valid, maybe mutate until is valid?
+				//repeat iteration
+				continue;
+			}
+
+			generation++;
+		}
+
+		//check if the last attempt has improved the solution
+		if (parent.costValue < best.costValue)
+		{
+			best = parent;
+		}
+
+		//Random restart
+		parent.shuffle();
+		parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
+				s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+		attempts++;
+	}
+	return best.costValue;
 }
 
 int hill_climbing(const std::vector<unsigned>& s1,
