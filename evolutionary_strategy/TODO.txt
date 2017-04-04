@@ -30,4 +30,11 @@ Vai avanti finché la tua efficienza economica si mantiene sopra un threshold dat
 
 Trovare rapporto ottimale padre e figli per (mu+lambda)-ES FONTE: introduction to ES. mu/lambda= 0.270
 
-Se si potesse salvare il calcolo dell'edit distance per un dato matching schema, anziché calcolarlo ogni volta, sarebbe ottimo
+Se si potesse salvare il calcolo dell'edit distance per un dato matching schema, anziché calcolarlo ogni volta, sarebbe ottimo.
+Associo un id ad ogni oggetto MS, lo inserisco in un tree set se non l'ho già inserito, quando crei un figlio, come fai a sapere se è diverso rispetto ad un altro? 
+Controlli la permutazione, potrebbe essere meno costoso controllare N permutazioni, che non calcolare l'edit distance per quel MS
+IDEA:
+Ogni MS ha uno storico degli swap effettuati su sigma1 e uno storico su sigma2. Se sto facendo uno swap su un array che è già stato effettuato non lo faccio
+e faccio un altro swap. Uno swap è identificato da 4 valori unsigned costanti: indiceP-valoreP <-> indiceA-valoreA (P=Partenza, A=Arrivo). 
+Problema: forse funziona solo con p1=p2=1. Inoltre forse bisognerebbe considerare entrambi gli array in contemporanea anziché considerare fare uno per volta
+
