@@ -5,6 +5,21 @@
  *      Author: RedShy
  */
 
+#ifndef mu_lambda_pwp_ES
+#define mu_lambda_pwp_ES
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+#include <limits>
+#include <thread>
+#include <queue>
+#include "ES_MatchingSchema.h"
+#include "EditDistance.h"
+#include "MatchingSchema.h"
+
+
 int evolutionStrategy_PWP(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
@@ -150,3 +165,4 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 	results[index] = parents[0].costValue;
 }
 
+#endif

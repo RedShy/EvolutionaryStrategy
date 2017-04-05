@@ -5,6 +5,9 @@
  *      Author: RedShy
  */
 
+#ifndef mu_lambda_ES_WP
+#define mu_lambda_ES_WP
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -15,8 +18,6 @@
 #include "ES_MatchingSchema.h"
 #include "EditDistance.h"
 #include "MatchingSchema.h"
-
-bool ES_isValid(ES_MatchingSchema m);
 
 int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
@@ -54,6 +55,9 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			i--;
 		}
 	}
+
+	std::make_heap(parents, parents + mu);
+	unsigned best = parents[0].costValue;
 
 	while (generation <= max_generations)
 	{
@@ -107,6 +111,17 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			}
 		}
 		generation++;
+
+		std::make_heap(parents, parents + mu);
+		std::cout << "ACTUAL BEST=" << parents[0].costValue << "\n";
+		if (best == parents[0].costValue)
+		{
+			std::cout << "NO IMPROVE!\n";
+		}
+		else
+		{
+
+		}
 	}
 
 	//TODO return best of all
@@ -114,9 +129,4 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 	return parents[0].costValue;
 }
 
-bool ES_isValid(ES_MatchingSchema m)
-{
-	//TODO validate a matching schema
-	return true;
-}
-
+#endif

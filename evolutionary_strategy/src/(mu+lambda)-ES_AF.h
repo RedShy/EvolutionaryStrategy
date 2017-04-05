@@ -12,6 +12,9 @@
  *      Author: RedShy
  */
 
+#ifndef mu_lambda_af_ES
+#define mu_lambda_af_ES
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -22,8 +25,6 @@
 #include "ES_MatchingSchema.h"
 #include "EditDistance.h"
 #include "MatchingSchema.h"
-
-bool ES_isValid(ES_MatchingSchema m);
 
 int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
@@ -108,9 +109,4 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 	return parents[0].costValue;
 }
 
-bool ES_isValid(ES_MatchingSchema m)
-{
-	//TODO validate a matching schema
-	return true;
-}
-
+#endif

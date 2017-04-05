@@ -8,6 +8,8 @@
 #define SRC_ES_MATCHINGSCHEMA_H_
 #include<vector>
 
+
+
 struct ES_MatchingSchema
 {
 		ES_MatchingSchema() :
@@ -63,6 +65,29 @@ struct ES_MatchingSchema
 			temp = sigma2[i_1];
 			sigma2[i_1] = sigma2[i_2];
 			sigma2[i_2] = temp;
+		}
+
+		void mutate(const unsigned n)
+		{
+			//Perform multiple simple swap of two indices for every vector
+			for (unsigned i = 0; i < n; ++i)
+			{
+				//first vector
+				unsigned i_1 = rand() % sigma1l;
+				unsigned i_2 = rand() % sigma1l;
+
+				unsigned temp = sigma1[i_1];
+				sigma1[i_1] = sigma1[i_2];
+				sigma1[i_2] = temp;
+
+				//second vector
+				i_1 = rand() % sigma2l;
+				i_2 = rand() % sigma2l;
+
+				temp = sigma2[i_1];
+				sigma2[i_1] = sigma2[i_2];
+				sigma2[i_2] = temp;
+			}
 		}
 
 		void calculateCost()
@@ -140,6 +165,11 @@ struct ES_MatchingSchema
 		unsigned costValue;
 };
 
+bool ES_isValid(ES_MatchingSchema m)
+{
+	//TODO validate a matching schema
+	return true;
+}
 
 
 #endif /* SRC_ES_MATCHINGSCHEMA_H_ */

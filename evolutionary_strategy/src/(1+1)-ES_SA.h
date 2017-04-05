@@ -1,12 +1,13 @@
 /*
- * (1+1)-ES.h
+ * (1+1)-ES_SA.h
  *
- *  Created on: 03 apr 2017
+ *  Created on: 05 apr 2017
  *      Author: RedShy
  */
 
-#ifndef SRC__1_1__ES_H_
-#define SRC__1_1__ES_H_
+#ifndef SRC__1_1__ES_SA_H_
+#define SRC__1_1__ES_SA_H_
+
 
 #include <iostream>
 #include <vector>
@@ -19,7 +20,7 @@
 #include "EditDistance.h"
 #include "MatchingSchema.h"
 
-int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
+int evolutionStrategy_one_one_sa(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
@@ -30,9 +31,14 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 		const unsigned max_generations)
 {
 	unsigned generation = 0;
-	unsigned plateu = 0;
 
-	const unsigned maxPlateu = 30;
+	const unsigned G = 10;
+	const double s = (1.00 / 5.00);
+	unsigned G_s = 0;
+	unsigned mutationStrength = 1;
+
+	unsigned plateu = 0;
+	const unsigned maxPlateu = 40;
 
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start
@@ -46,7 +52,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 		ES_MatchingSchema child = parent;
 
 		//mutate child
-		child.mutate();
+		child.mutate(mutationStrength);
 
 		//validate child
 		if (ES_isValid(child))
@@ -62,6 +68,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 				parent.costValue = newDistance;
 
 				plateu = 0;
+				G_s++;
 			}
 			else
 			{
@@ -81,6 +88,29 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 		}
 
 		generation++;
+
+		if (generation % G == 0)
+		{
+
+			const float r = G_s / G;
+			std::cout << "DENTRO! G_s=" << G_s << " G=" << G << " r=" << r
+					<< " s=" << s << "\n";
+			if (r > s)
+			{
+				std::cout << "INCREMENTO!\n";
+				++mutationStrength;
+			}
+			else if (r < s)
+			{
+				std::cout << "VORREI DECREMENTARE\n";
+				if (mutationStrength != 1)
+				{
+					std::cout << "DECREMENTO!\n";
+					--mutationStrength;
+				}
+			}
+			G_s = 0;
+		}
 	}
 
 	//TODO return best of all
@@ -88,4 +118,6 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 }
 
 
-#endif /* SRC__1_1__ES_H_ */
+
+
+#endif /* SRC__1_1__ES_SA_H_ */

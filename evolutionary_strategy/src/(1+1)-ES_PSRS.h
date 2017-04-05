@@ -19,8 +19,6 @@
 #include "EditDistance.h"
 #include "MatchingSchema.h"
 
-bool ES_isValid(ES_MatchingSchema m);
-
 int evolutionStrategy_one_one_psrs(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
@@ -155,12 +153,6 @@ void evolutionStrategy_one_one_srs_t(const std::vector<unsigned>& s1,
 		attempts++;
 	}
 	results[index] = best.costValue;
-}
-
-bool ES_isValid(ES_MatchingSchema m)
-{
-	//TODO validate a matching schema
-	return true;
 }
 
 
