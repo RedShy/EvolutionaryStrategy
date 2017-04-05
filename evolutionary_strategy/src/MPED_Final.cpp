@@ -19,13 +19,13 @@
 #include "BruteForce.h"
 #include "(mu+lambda)-ES.h"
 #include "(mu+lambda)-ES_WP.h"
-#include "(mu+lambda)-ES_PWP.h"
 #include "(mu+lambda)-ES_AF.h"
 #include "(1+1)-ES.h"
+#include "(1+1)-ES_BSRS.h"
 #include "(1+1)-ES_SA.h"
 #include "(1+1)-ES_RS.h"
 #include "(1+1)-ES_SRS.h"
-#include "(1+1)-ES_PSRS.h"
+#include "(mu+lambda)-ES_BWP.h"
 
 
 /* Definitions */
@@ -39,15 +39,15 @@ const std::string _HC_ARG("hc");
 const std::string _HCD_ARG("hcd");
 const std::string _BRUTEFORCE_ARG("ex");
 const std::string _ES_ARG("es");
+const std::string _ES_WP_ARG("es_wp");
+const std::string _ES_BWP_ARG("es_bwp");
+const std::string _ES_AF_ARG("es_af");
 const std::string _ES_ONE_ONE_ARG("es_one_one");
 const std::string _ES_ONE_ONE_SA_ARG("es_one_one_sa");
 const std::string _ES_ONE_ONE_RS_ARG("es_one_one_rs");
 const std::string _ES_ONE_ONE_SRS_ARG("es_one_one_srs");
-const std::string _ES_ONE_ONE_PSRS_ARG("es_one_one_psrs");
+const std::string _ES_ONE_ONE_BSRS_ARG("es_one_one_bsrs");
 const std::string _ES_ONE_LAMBDA_ARG("es_one_lambda");
-const std::string _ES_WP_ARG("es_wp");
-const std::string _ES_PWP_ARG("es_pwp");
-const std::string _ES_AF_ARG("es_af");
 const std::string _SPECIFIC_PMS("specific-permutations");
 const std::string _SPECIFIC_MMS("specific-matrix");
 

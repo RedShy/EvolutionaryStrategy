@@ -90,13 +90,6 @@ struct ES_MatchingSchema
 			}
 		}
 
-		void calculateCost()
-		{
-			//TODO calculate edit distance for this matching schema, maybe has to be done outside of this class?
-
-			costValue = rand() % 999999999;
-		}
-
 		bool operator<(const ES_MatchingSchema& m) const
 		{
 			return this->costValue >= m.costValue;

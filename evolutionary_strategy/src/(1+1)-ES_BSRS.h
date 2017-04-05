@@ -5,8 +5,8 @@
  *      Author: RedShy
  */
 
-#ifndef SRC__1_1__ES_PSRS_H_
-#define SRC__1_1__ES_PSRS_H_
+#ifndef SRC__1_1__ES_BSRS_H_
+#define SRC__1_1__ES_BSRS_H_
 
 #include <iostream>
 #include <vector>
@@ -168,4 +168,4 @@ void evolutionStrategy_one_one_srs_t(const std::vector<unsigned>& s1,
 
 
 
-#endif /* SRC__1_1__ES_PSRS_H_ */
+#endif /* SRC__1_1__ES_BSRS_H_ */
