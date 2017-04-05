@@ -5,9 +5,8 @@
  *  Created on: 04 apr 2017
  *      Author: RedShy
  */
-
-#ifndef SRC__1_1__ES_H_
-#define SRC__1_1__ES_H_
+#ifndef ES_ONE_ONE_SRS
+#define ES_ONE_ONE_SRS
 
 #include <iostream>
 #include <vector>

@@ -5,8 +5,8 @@
  *      Author: RedShy
  */
 
-#ifndef SRC__1_1__ES_H_
-#define SRC__1_1__ES_H_
+#ifndef ES_ONE_ONE_RS
+#define ES_ONE_ONE_RS
 
 #include <iostream>
 #include <vector>
