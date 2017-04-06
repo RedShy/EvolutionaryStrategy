@@ -56,9 +56,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		}
 	}
 
-	std::make_heap(parents, parents + mu);
-	unsigned best = parents[0].costValue;
-
+//	unsigned same = 0;
 	while (generation <= max_generations)
 	{
 		//Generate lambda children. Only mutation, no recombination
@@ -70,8 +68,33 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			//Produce child, in the case parents=1 (like this) just clone
 			ES_MatchingSchema child = parents[p];
 
+
+
 			//mutate child
 			child.mutate();
+
+
+
+//			child.costValue = e.edit_distance_matching_schema_enhanced(s1, s2,
+//					s1l, s2l, child.sigma1, child.sigma2, sig1l, sig2l, m);
+//			if (child.costValue < parents[p].costValue)
+//			{
+//				std::cout << "IMPROVED!";
+//			}
+//			else if (child.costValue > parents[p].costValue)
+//			{
+//				std::cout << "WORSE!\n";
+//			}
+//			else
+//			{
+//				std::cout << "SAME VALUE!\n";
+//				same++;
+//				std::cout << "BEFORE:\n";
+//				m.print_matching_schema(parents[p].sigma1, parents[p].sigma2);
+//				std::cout << "AFTER:\n";
+//				m.print_matching_schema(child.sigma1, child.sigma2);
+//			}
+//			std::cout << "-------------------------------------\n";
 
 			//validate child
 			if (ES_isValid(child))
@@ -101,6 +124,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 					child.costValue = newDistance;
 					parents[worstParent] = child;
 				}
+
 //				else child discarded
 			}
 			else
@@ -111,22 +135,22 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			}
 		}
 		generation++;
-
-//		std::make_heap(parents, parents + mu);
-//		std::cout << "ACTUAL BEST=" << parents[0].costValue << "\n";
-//		if (best == parents[0].costValue)
-//		{
-//			std::cout << "NO IMPROVE!\n";
-//		}
-//		else
-//		{
-//
-//		}
 	}
 
 	//TODO return best of all
-	std::make_heap(parents, parents + mu);
-	return parents[0].costValue;
+	unsigned bestValue = parents[0].costValue;
+	unsigned bestParent = 0;
+	for (unsigned i = 1; i < mu; i++)
+	{
+		if (parents[i].costValue < bestValue)
+		{
+			bestValue = parents[i].costValue;
+			bestParent = i;
+		}
+	}
+//	std::cout << "SAME VALUE:" << same << "\n";
+	return bestValue;
+
 }
 
 #endif
