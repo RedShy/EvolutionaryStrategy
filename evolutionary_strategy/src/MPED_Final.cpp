@@ -14,18 +14,18 @@
 #include "ES_MatchingSchema.h"
 #include "Utility.h"
 /* Solvers */
-#include "solvers/HillClimbing.h"
-#include "solvers/HillClimbing_with_diagonal.h"
-#include "solvers/BruteForce.h"
-#include "solvers/(mu+lambda)-ES.h"
-#include "solvers/(mu+lambda)-ES_WP.h"
-#include "solvers/(mu+lambda)-ES_AF.h"
-#include "solvers/(1+1)-ES.h"
-#include "solvers/(1+1)-ES_BSRS.h"
-#include "solvers/(1+1)-ES_SA.h"
-#include "solvers/(1+1)-ES_RS.h"
-#include "solvers/(1+1)-ES_SRS.h"
-#include "solvers/(mu+lambda)-ES_BWP.h"
+#include "HillClimbing.h"
+#include "HillClimbing_with_diagonal.h"
+#include "BruteForce.h"
+#include "(mu+lambda)-ES.h"
+#include "(mu+lambda)-ES_WP.h"
+#include "(mu+lambda)-ES_AF.h"
+#include "(1+1)-ES.h"
+#include "(1+1)-ES_BSRS.h"
+#include "(1+1)-ES_SA.h"
+#include "(1+1)-ES_RS.h"
+#include "(1+1)-ES_SRS.h"
+#include "(mu+lambda)-ES_BWP.h"
 
 
 /* Definitions */
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 6, 22);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 5, 18);
 		}
 		else if (heuristic == _ES_BWP_ARG)
 		{
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_AF_ARG)
 		{
 			distance = evolutionStrategy_AF(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 6, 22);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 5, 18);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
