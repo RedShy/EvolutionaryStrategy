@@ -46,7 +46,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 		ES_MatchingSchema child = parent;
 
 		//mutate child
-		child.mutate();
+		child.mutate_temp();
 
 		//validate child
 		if (ES_isValid(child))

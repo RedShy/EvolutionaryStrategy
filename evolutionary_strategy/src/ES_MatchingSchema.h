@@ -40,13 +40,13 @@ struct ES_MatchingSchema
 			std::copy(m.sigma2, m.sigma2 + sigma2l, sigma2);
 		}
 
-		void shuffle()
+		void shuffle() const
 		{
 			std::random_shuffle(sigma1, sigma1 + sigma1l);
 			std::random_shuffle(sigma2, sigma2 + sigma2l);
 		}
 
-		void mutate()
+		void mutate() const
 		{
 			//Perform a single, simple swap of two indices for every vector
 
@@ -54,20 +54,65 @@ struct ES_MatchingSchema
 			unsigned i_1 = rand() % sigma1l;
 			unsigned i_2 = rand() % sigma1l;
 
+			//TODO
 			unsigned temp = sigma1[i_1];
 			sigma1[i_1] = sigma1[i_2];
 			sigma1[i_2] = temp;
+
+//			std::cout << "FIRST VECTOR: i_1=" << i_1 << " i_2=" << i_2 << "\n";
 
 			//second vector
 			i_1 = rand() % sigma2l;
 			i_2 = rand() % sigma2l;
 
+			//TODO
+
 			temp = sigma2[i_1];
 			sigma2[i_1] = sigma2[i_2];
 			sigma2[i_2] = temp;
+
+//			std::cout << "SECOND VECTOR: i_1=" << i_1 << " i_2=" << i_2 << "\n";
+
 		}
 
-		void mutate(const unsigned n)
+		void mutate_temp() const
+		{
+			//Perform a single, simple swap of two indices for every vector
+
+			//first vector
+			unsigned i_1 = rand() % sigma1l;
+			unsigned i_2 = rand() % sigma1l;
+
+			//TODO
+			while (i_1 == i_2)
+			{
+				i_1 = rand() % sigma1l;
+			}
+			unsigned temp = sigma1[i_1];
+			sigma1[i_1] = sigma1[i_2];
+			sigma1[i_2] = temp;
+
+//			std::cout << "FIRST VECTOR: i_1=" << i_1 << " i_2=" << i_2 << "\n";
+
+//second vector
+			i_1 = rand() % sigma2l;
+			i_2 = rand() % sigma2l;
+
+			//TODO
+			while (i_1 == i_2)
+			{
+				i_1 = rand() % sigma2l;
+			}
+
+			temp = sigma2[i_1];
+			sigma2[i_1] = sigma2[i_2];
+			sigma2[i_2] = temp;
+
+//			std::cout << "SECOND VECTOR: i_1=" << i_1 << " i_2=" << i_2 << "\n";
+
+		}
+
+		void mutate(const unsigned n) const
 		{
 			//Perform multiple simple swap of two indices for every vector
 			for (unsigned i = 0; i < n; ++i)
@@ -76,6 +121,12 @@ struct ES_MatchingSchema
 				unsigned i_1 = rand() % sigma1l;
 				unsigned i_2 = rand() % sigma1l;
 
+				//TODO
+				while (i_1 == i_2)
+				{
+					i_1 = rand() % sigma1l;
+				}
+
 				unsigned temp = sigma1[i_1];
 				sigma1[i_1] = sigma1[i_2];
 				sigma1[i_2] = temp;
@@ -83,6 +134,12 @@ struct ES_MatchingSchema
 				//second vector
 				i_1 = rand() % sigma2l;
 				i_2 = rand() % sigma2l;
+
+				//TODO
+				while (i_1 == i_2)
+				{
+					i_1 = rand() % sigma1l;
+				}
 
 				temp = sigma2[i_1];
 				sigma2[i_1] = sigma2[i_2];
