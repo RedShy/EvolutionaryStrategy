@@ -30,7 +30,7 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 		const unsigned max_generations, const unsigned maxAttempts)
 {
 
-	const unsigned maxPlateu = 10;
+	const unsigned maxPlateu = 5 * p1;
 	unsigned attempts = 0;
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start

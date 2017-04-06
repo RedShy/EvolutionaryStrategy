@@ -32,7 +32,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 	unsigned generation = 0;
 	unsigned plateu = 0;
 
-	const unsigned maxPlateu = 30;
+	const unsigned maxPlateu = 60 * p1;
 
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start

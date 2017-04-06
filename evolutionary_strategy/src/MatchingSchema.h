@@ -108,6 +108,21 @@ struct matching_schema
 			}
 		}
 
+		void print_matching_schema(unsigned* sigma1, unsigned* sigma2)
+		{
+			std::cout << "\t";
+			for (int j = 0; j < m; ++j)
+				std::cout << sigma2[j] << "\t";
+			std::cout << std::endl;
+			for (int i = 0; i < n; ++i)
+			{
+				std::cout << sigma1[i] << "\t";
+				for (int j = 0; j < m; ++j)
+					std::cout << ms[i][j] << "\t";
+				std::cout << std::endl;
+			}
+		}
+
 		void shift(int startRow, int startCol, T value)
 		{
 

@@ -30,7 +30,7 @@ void evolutionStrategy_one_one_srs_t(const std::vector<unsigned>& s1,
 		const unsigned max_generations, const unsigned maxAttempts,
 		unsigned results[], const unsigned index);
 
-int evolutionStrategy_one_one_psrs(const std::vector<unsigned>& s1,
+int evolutionStrategy_one_one_bsrs(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,

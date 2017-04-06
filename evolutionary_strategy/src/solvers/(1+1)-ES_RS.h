@@ -35,7 +35,7 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 	unsigned lastBest = std::numeric_limits<unsigned int>::max();
 	const unsigned threshold = 5;
 	const unsigned lapCheckPoint = 500;
-	const unsigned maxPlateu = 10;
+	const unsigned maxPlateu = 20 * p1;
 
 
 

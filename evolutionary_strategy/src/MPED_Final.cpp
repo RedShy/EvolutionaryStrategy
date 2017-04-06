@@ -14,18 +14,18 @@
 #include "ES_MatchingSchema.h"
 #include "Utility.h"
 /* Solvers */
-#include "HillClimbing.h"
-#include "HillClimbing_with_diagonal.h"
-#include "BruteForce.h"
-#include "(mu+lambda)-ES.h"
-#include "(mu+lambda)-ES_WP.h"
-#include "(mu+lambda)-ES_AF.h"
-#include "(1+1)-ES.h"
-#include "(1+1)-ES_BSRS.h"
-#include "(1+1)-ES_SA.h"
-#include "(1+1)-ES_RS.h"
-#include "(1+1)-ES_SRS.h"
-#include "(mu+lambda)-ES_BWP.h"
+#include "solvers/HillClimbing.h"
+#include "solvers/HillClimbing_with_diagonal.h"
+#include "solvers/BruteForce.h"
+#include "solvers/(mu+lambda)-ES.h"
+#include "solvers/(mu+lambda)-ES_WP.h"
+#include "solvers/(mu+lambda)-ES_AF.h"
+#include "solvers/(1+1)-ES.h"
+#include "solvers/(1+1)-ES_BSRS.h"
+#include "solvers/(1+1)-ES_SA.h"
+#include "solvers/(1+1)-ES_RS.h"
+#include "solvers/(1+1)-ES_SRS.h"
+#include "solvers/(mu+lambda)-ES_BWP.h"
 
 
 /* Definitions */
@@ -156,6 +156,8 @@ int main(int argc, char *argv[])
 			default_constraints_mode);
 	ms.set_general(sigma1, sigma2, false);
 
+
+
 	// TODO: CONSTRAINTS
 	//if (has_constraints)
 	//	ms.set_constraints(map1, map2, constraints, !default_constraints_mode);
@@ -185,7 +187,7 @@ int main(int argc, char *argv[])
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 	{
-//		clock_gettime(CLOCK_MONOTONIC, &start1);
+		clock_gettime(CLOCK_MONOTONIC, &start1);
 		clock_t start = clock();
 		if (heuristic == _BRUTEFORCE_ARG)
 		{
@@ -205,22 +207,23 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
-					sigma1l, sigma2l, p1, ms, e, 20, 5, 18, true);
+					sigma1l, sigma2l, p1, ms, e, 20, 6, 22,
+					true);
 		}
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 1, 5);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 6, 22);
 		}
-		else if (heuristic == _ES_PWP_ARG)
+		else if (heuristic == _ES_BWP_ARG)
 		{
-			distance = evolutionStrategy_PWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5, 5, 18, 4);
+			distance = evolutionStrategy_BWP(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 10, 5, 18, 4);
 		}
 		else if (heuristic == _ES_AF_ARG)
 		{
 			distance = evolutionStrategy_AF(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 5, 18);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 6, 22);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
@@ -236,12 +239,14 @@ int main(int argc, char *argv[])
 		{
 			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
 					sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000,
+					10);
 		}
-		else if (heuristic == _ES_ONE_ONE_PSRS_ARG)
+		else if (heuristic == _ES_ONE_ONE_BSRS_ARG)
 		{
-			distance = evolutionStrategy_one_one_psrs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 5, 4);
+			distance = evolutionStrategy_one_one_bsrs(s1i, s2i, s1l, s2l,
+					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10,
+					4);
 		}
 		else if (heuristic == _ES_ONE_ONE_RS_ARG)
 		{
@@ -253,11 +258,11 @@ int main(int argc, char *argv[])
 			//TODO
 		}
 		clock_t timeElapsed = clock() - start;
-//		clock_gettime(CLOCK_MONOTONIC, &finish1);
+		clock_gettime(CLOCK_MONOTONIC, &finish1);
 		msElapsed = timeElapsed / CLOCKS_PER_MS;
 
-//		elapsed = (finish1.tv_sec - start1.tv_sec);
-//		elapsed += (finish1.tv_nsec - start1.tv_nsec) / 1000000000.0;
+		elapsed = (finish1.tv_sec - start1.tv_sec);
+		elapsed += (finish1.tv_nsec - start1.tv_nsec) / 1000000000.0;
 
 	}
 	// For a specific matching schema
@@ -318,8 +323,15 @@ int main(int argc, char *argv[])
 	}
 
 	std::cout << distance;
+	if (heuristic == _ES_ONE_ONE_BSRS_ARG || heuristic == _ES_BWP_ARG)
+	{
+		std::cout << ' ' << (int) (elapsed * 1000) << endl;
+	}
+	else
+	{
 	std::cout << ' ' << msElapsed << endl;
-//	std::cout << ' ' << (int) (elapsed * 1000) << endl;
+	}
+
 	return 0;
 }
 

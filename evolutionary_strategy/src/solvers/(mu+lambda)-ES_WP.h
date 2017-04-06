@@ -1,25 +1,25 @@
 /*
- * (mu+lambda)-ES_PWP.h
+ * (mu+lambda)-ES_WP.h
  *
  *  Created on: 04 apr 2017
  *      Author: RedShy
  */
 
-#ifndef mu_lambda_pwp_ES
-#define mu_lambda_pwp_ES
+#ifndef mu_lambda_ES_WP
+#define mu_lambda_ES_WP
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <limits>
-#include <thread>
 #include <queue>
 #include "ES_MatchingSchema.h"
 #include "EditDistance.h"
 #include "MatchingSchema.h"
 
-void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
+int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
@@ -28,68 +28,7 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
 
 		const unsigned max_generations, const unsigned mu,
-		const unsigned lambda, unsigned results[], const unsigned index);
-
-int evolutionStrategy_PWP(const std::vector<unsigned>& s1,
-		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
-
-		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
-		const size_t& sig1l, const size_t& sig2l,
-
-		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
-
-		const unsigned max_generations,
-		const unsigned mu, const unsigned lambda, const unsigned NThread)
-{
-	unsigned results[4];
-
-//	for (unsigned i = 0; i < NThread; ++i)
-//	{
-//		std::thread s(evolutionStrategy_one_one_srs_t, s1, s2, s1l, s2l, sig1, sig2,
-//				sig1l, sig2l, p1, m, e, max_generations, maxAttempts, results,
-//				i);
-//	}
-
-	std::thread t1(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
-			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 0);
-	std::thread t2(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
-			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 1);
-	std::thread t3(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
-			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 2);
-	std::thread t4(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
-			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 3);
-
-	t1.join();
-	t2.join();
-	t3.join();
-	t4.join();
-
-	unsigned min = results[0];
-	for (unsigned i = 1; i < NThread; i++)
-	{
-		if (results[i] < min)
-		{
-			min = results[i];
-		}
-	}
-
-	return min;
-}
-
-void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
-		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
-
-		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
-		const size_t& sig1l, const size_t& sig2l,
-
-		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
-
-		const unsigned max_generations, const unsigned mu,
-		const unsigned lambda, unsigned results[], const unsigned index)
+		const unsigned lambda)
 {
 	unsigned generation = 0;
 
@@ -116,6 +55,9 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 			i--;
 		}
 	}
+
+	std::make_heap(parents, parents + mu);
+	unsigned best = parents[0].costValue;
 
 	while (generation <= max_generations)
 	{
@@ -149,8 +91,9 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 
 				int newDistance =
 						e.edit_distance_matching_schema_enhanced_with_diagonal(
-								s1, s2, s1l, s2l, child.sigma1, child.sigma2,
-								sig1l, sig2l, m, worstParentCostValue);
+								s1,
+						s2, s1l, s2l, child.sigma1, child.sigma2, sig1l, sig2l,
+						m, worstParentCostValue);
 
 				if (newDistance != -1)
 				{
@@ -168,11 +111,22 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 			}
 		}
 		generation++;
+
+//		std::make_heap(parents, parents + mu);
+//		std::cout << "ACTUAL BEST=" << parents[0].costValue << "\n";
+//		if (best == parents[0].costValue)
+//		{
+//			std::cout << "NO IMPROVE!\n";
+//		}
+//		else
+//		{
+//
+//		}
 	}
 
 	//TODO return best of all
 	std::make_heap(parents, parents + mu);
-	results[index] = parents[0].costValue;
+	return parents[0].costValue;
 }
 
 #endif
