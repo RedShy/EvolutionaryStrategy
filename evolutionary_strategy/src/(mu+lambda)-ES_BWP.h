@@ -41,7 +41,7 @@ int evolutionStrategy_BWP(const std::vector<unsigned>& s1,
 		const unsigned max_generations,
 		const unsigned mu, const unsigned lambda, const unsigned NThread)
 {
-	unsigned results[4];
+	unsigned results[2];
 
 //	for (unsigned i = 0; i < NThread; ++i)
 //	{
@@ -52,21 +52,23 @@ int evolutionStrategy_BWP(const std::vector<unsigned>& s1,
 
 	std::thread t1(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
 			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 0);
+			15, lambda,
+			results, 0);
 	std::thread t2(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
 			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 1);
-	std::thread t3(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
-			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 2);
-	std::thread t4(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
-			sig2l, p1, std::ref(m), std::ref(e), max_generations,
-			mu, lambda, results, 3);
+			30, lambda,
+			results, 1);
+//	std::thread t3(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
+//			sig2l, p1, std::ref(m), std::ref(e), max_generations,
+//			mu, lambda, results, 2);
+//	std::thread t4(evolutionStrategy_WP_t, s1, s2, s1l, s2l, sig1, sig2, sig1l,
+//			sig2l, p1, std::ref(m), std::ref(e), max_generations,
+//			mu, lambda, results, 3);
 
 	t1.join();
 	t2.join();
-	t3.join();
-	t4.join();
+//	t3.join();
+//	t4.join();
 
 	unsigned min = results[0];
 	for (unsigned i = 1; i < NThread; i++)
@@ -77,6 +79,7 @@ int evolutionStrategy_BWP(const std::vector<unsigned>& s1,
 		}
 	}
 
+	std::cout << min;
 	return min;
 }
 
@@ -115,10 +118,11 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 			//repeat iteration
 			i--;
 		}
-	}
+		}
 
+	//	unsigned same = 0;
 	while (generation <= max_generations)
-	{
+		{
 		//Generate lambda children. Only mutation, no recombination
 		for (unsigned i = 0; i < lambda; i++)
 		{
@@ -128,24 +132,26 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 			//Produce child, in the case parents=1 (like this) just clone
 			ES_MatchingSchema child = parents[p];
 
-			//mutate child
+
+
+				//mutate child
 			child.mutate();
 
 			//validate child
 			if (ES_isValid(child))
-			{
+				{
 
 				//select the worst parent, mu is always very very small like 5 or 10
 				unsigned worstParentCostValue = parents[0].costValue;
 				unsigned worstParent = 0;
 				for (unsigned i = 1; i < mu; i++)
-				{
+					{
 					if (parents[i].costValue > worstParentCostValue)
 					{
 						worstParentCostValue = parents[i].costValue;
 						worstParent = i;
 					}
-				}
+					}
 
 				int newDistance =
 						e.edit_distance_matching_schema_enhanced_with_diagonal(
@@ -158,21 +164,32 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 					child.costValue = newDistance;
 					parents[worstParent] = child;
 				}
-//				else child discarded
+
+				//				else child discarded
 			}
 			else
-			{
+				{
 				//TODO: not valid, maybe mutate until is valid?
 				//repeat iteration
 				i--;
+				}
 			}
-		}
 		generation++;
 	}
 
 	//TODO return best of all
-	std::make_heap(parents, parents + mu);
-	results[index] = parents[0].costValue;
+	unsigned bestValue = parents[0].costValue;
+	unsigned bestParent = 0;
+	for (unsigned i = 1; i < mu; i++)
+	{
+		if (parents[i].costValue < bestValue)
+			{
+			bestValue = parents[i].costValue;
+			bestParent = i;
+			}
+		}
+
+	results[index] = bestValue;
 }
 
 #endif

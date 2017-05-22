@@ -30,15 +30,15 @@ int evolutionStrategy_one_one_sa(const std::vector<unsigned>& s1,
 
 		const unsigned max_generations)
 {
+	clock_t start = clock();
+	long double msElapsed = 0;
+
 	unsigned generation = 0;
 
-	const unsigned G = 10;
-	const double s = (1.00 / 5.00);
-	unsigned G_s = 0;
-	unsigned mutationStrength = 1;
+	unsigned mutationStrength = 10;
 
 	unsigned plateu = 0;
-	const unsigned maxPlateu = 40;
+	const unsigned maxPlateu = 40000;
 
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start
@@ -46,6 +46,11 @@ int evolutionStrategy_one_one_sa(const std::vector<unsigned>& s1,
 
 	parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
 			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+
+	clock_t timeElapsed1 = clock() - start;
+	msElapsed = timeElapsed1 / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << parent.costValue << "\n";
+
 	while (generation <= max_generations)
 	{
 		//Produce child
@@ -68,7 +73,16 @@ int evolutionStrategy_one_one_sa(const std::vector<unsigned>& s1,
 				parent.costValue = newDistance;
 
 				plateu = 0;
-				G_s++;
+
+				if (mutationStrength != 1)
+				{
+					--mutationStrength;
+				}
+
+				clock_t timeElapsed = clock() - start;
+				msElapsed = timeElapsed / CLOCKS_PER_MS;
+				std::cout << msElapsed << " " << parent.costValue << "\n";
+
 			}
 			else
 			{
@@ -89,31 +103,14 @@ int evolutionStrategy_one_one_sa(const std::vector<unsigned>& s1,
 
 		generation++;
 
-		if (generation % G == 0)
-		{
-
-			const float r = G_s / G;
-			std::cout << "DENTRO! G_s=" << G_s << " G=" << G << " r=" << r
-					<< " s=" << s << "\n";
-			if (r > s)
-			{
-				std::cout << "INCREMENTO!\n";
-				++mutationStrength;
-			}
-			else if (r < s)
-			{
-				std::cout << "VORREI DECREMENTARE\n";
-				if (mutationStrength != 1)
-				{
-					std::cout << "DECREMENTO!\n";
-					--mutationStrength;
-				}
-			}
-			G_s = 0;
-		}
 	}
 
 	//TODO return best of all
+
+	clock_t timeElapsed = clock() - start;
+	msElapsed = timeElapsed / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << parent.costValue << "\n";
+
 	return parent.costValue;
 }
 

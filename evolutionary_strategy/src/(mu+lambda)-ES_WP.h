@@ -30,6 +30,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		const unsigned max_generations, const unsigned mu,
 		const unsigned lambda)
 {
+
 	unsigned generation = 0;
 
 	ES_MatchingSchema startingMS(sig1, sig2);
@@ -72,7 +73,6 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 
 			//mutate child
 			child.mutate();
-
 
 
 //			child.costValue = e.edit_distance_matching_schema_enhanced(s1, s2,
@@ -149,6 +149,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		}
 	}
 //	std::cout << "SAME VALUE:" << same << "\n";
+	std::cout << bestValue;
 	return bestValue;
 
 }

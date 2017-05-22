@@ -79,9 +79,10 @@ int hill_climbing(const std::vector<unsigned>& s1,
 							std::swap(sigma2_o[ipp], sigma2_o[jpp]);	// swap
 
 							int newDistance =
-									e.edit_distance_matching_schema_enhanced(s1,
+									e.edit_distance_matching_schema_enhanced_with_diagonal(
+											s1,
 											s2, s1l, s2l, sigma1_o, sigma2_o,
-											sig1l, sig2l, m);
+											sig1l, sig2l, m, minDist);
 
 							if (newDistance != -1)
 							{
@@ -159,6 +160,7 @@ int hill_climbing(const std::vector<unsigned>& s1,
 	delete[] sigma2_min;
 	delete[] sigma2_min_min;
 
+	std::cout << minMinDist;
 	return minMinDist;
 }
 

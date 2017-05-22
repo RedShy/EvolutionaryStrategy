@@ -29,13 +29,15 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 
 		const unsigned max_generations)
 {
+	clock_t start = clock();
+	long double msElapsed = 0;
+
 	unsigned generation = 0;
 	unsigned plateu = 0;
-//	unsigned metaPlateu = 0;
 	unsigned lastBest = std::numeric_limits<unsigned int>::max();
-	const unsigned threshold = 5;
+	const unsigned threshold = 0;
 	const unsigned lapCheckPoint = 500;
-	const unsigned maxPlateu = 20 * p1;
+	const unsigned maxPlateu = 50 * p1;
 
 
 
@@ -47,6 +49,11 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
 
 	ES_MatchingSchema best = parent;
+
+	clock_t timeElapsed1 = clock() - start;
+	msElapsed = timeElapsed1 / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << parent.costValue << "\n";
+
 	while (generation <= max_generations)
 	{
 		//Produce child
@@ -55,31 +62,18 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		//mutate child
 		child.mutate();
 
-//		unsigned d = e.edit_distance_matching_schema_enhanced(s1, s2, s1l, s2l,
-//				child.sigma1, child.sigma2, sig1l, sig2l, m);
-//		std::cout << " REALchildValue= " << d << " parentValue= "
-//				<< parent.costValue << " bestValue= " << best.costValue << endl;
-
-		//validate child
 		if (ES_isValid(child))
 		{
-//			std::cout << " parentValueBEFOREEDIT= " << parent.costValue;
 			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
 							sig2l, m, parent.costValue);
 
-//			std::cout << " newDistance= " << newDistance << endl;
 			if (newDistance != -1)
 			{
 				//The child is better than its father, so he become new parent
 				parent = child;
 				parent.costValue = newDistance;
-
-//				std::cout << "AFTER ASSIGNENT" << " childValue= "
-//						<< child.costValue << " parentValue= "
-//						<< parent.costValue << " bestValue= " << best.costValue
-//						<< endl << endl;
 
 				plateu = 0;
 
@@ -87,23 +81,20 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 				if (parent.costValue < best.costValue)
 				{
 					best = parent;
-//					metaPlateu = 0;
+
+					clock_t timeElapsed = clock() - start;
+					msElapsed = timeElapsed / CLOCKS_PER_MS;
+					std::cout << msElapsed << " " << parent.costValue << "\n";
+
 				}
 			}
 			else
 			{
 				plateu++;
-//				std::cout << "plateu= " << plateu << " WORSE!"
-//						<< " childValue= " << child.costValue
-//						<< " parentValue= " << parent.costValue
-//						<< " bestValue= " << best.costValue << endl;
 				if (plateu == maxPlateu)
 				{
 					plateu = 0;
 
-//					std::cout << "BEFORE SHUFFLE " << "costValue="
-//							<< parent.costValue << endl;
-//					parent.print();
 					parent.shuffle();
 					parent.costValue = e.edit_distance_matching_schema_enhanced(
 							s1, s2, s1l, s2l, parent.sigma1, parent.sigma2,
@@ -111,21 +102,18 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 					if (parent.costValue < best.costValue)
 					{
 						best = parent;
-//						metaPlateu = 0;
+
+						clock_t timeElapsed = clock() - start;
+						msElapsed = timeElapsed / CLOCKS_PER_MS;
+						std::cout << msElapsed << " " << parent.costValue
+								<< "\n";
+
 					}
-
-//					std::cout << "AFTER SHUFFLE" << "costValue="
-//							<< parent.costValue << endl;
-//					parent.print();
-
 				}
 			}
-			//else the child is worse than its father so he is discarded
 		}
 		else
 		{
-			//TODO: not valid, maybe mutate until is valid?
-			//repeat iteration
 			continue;
 		}
 
@@ -135,7 +123,7 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		if (generation % lapCheckPoint == 0)
 		{
 			//few rendiment in the last checkpoint, so stop here
-			if (lastBest - best.costValue <= threshold)
+			if (lastBest - best.costValue < threshold)
 			{
 				break;
 			}
@@ -144,14 +132,13 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 			lastBest = best.costValue;
 		}
 
-//		metaPlateu++;
-//		if (metaPlateu == 1000)
-//		{
-//			break;
-//		}
 	}
 
 	//TODO return best of all
+	clock_t timeElapsed = clock() - start;
+	msElapsed = timeElapsed / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << best.costValue << "\n";
+
 	return best.costValue;
 }
 

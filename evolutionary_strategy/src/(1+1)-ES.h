@@ -32,7 +32,7 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 	unsigned generation = 0;
 	unsigned plateu = 0;
 
-	const unsigned maxPlateu = 60 * p1;
+	const unsigned maxPlateu = 20 * p1;
 
 	ES_MatchingSchema parent(sig1, sig2);
 	//Random start
@@ -40,13 +40,16 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 
 	parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
 			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+
+//	std::cout << "INIZIO:" << parent.costValue << "\n";
+
 	while (generation <= max_generations)
 	{
 		//Produce child
 		ES_MatchingSchema child = parent;
 
 		//mutate child
-		child.mutate_temp();
+		child.mutate();
 
 		//validate child
 		if (ES_isValid(child))
@@ -60,6 +63,8 @@ int evolutionStrategy_one_one(const std::vector<unsigned>& s1,
 				//The child is better than its father, so he become new parent
 				parent = child;
 				parent.costValue = newDistance;
+
+//				std::cout << "Migliore" << parent.costValue << "\n";
 
 				plateu = 0;
 			}

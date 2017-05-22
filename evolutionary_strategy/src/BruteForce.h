@@ -15,11 +15,16 @@
 #include <vector>
 #include <bitset>
 
+#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
+
 int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 		const size_t& s1l, const size_t& s2l, const std::vector<unsigned>& sig1,
 		const std::vector<unsigned>& sig2, const size_t& sig1l,
 		const size_t& sig2l, const matching_schema<bool>& m, edit_distance& e)
 {
+
+	clock_t start = clock();
+	long double msElapsed = 0;
 
 	unsigned distance = e.edit_distance_matching_schema(s1, s2, s1l, s2l, m);
 	unsigned current = distance;
@@ -35,15 +40,22 @@ int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 
 	do
 	{
-		do
-		{
-			current = fixed_ed.edit_distance_matching_schema_enhanced(s1, s2,
-					s1l, s2l, perm1, perm2, sig1l, sig2l, m);
+//		do
+//		{
+			current = e.edit_distance_matching_schema_enhanced_with_diagonal(s1, s2,
+					s1l, s2l, perm1, perm2, sig1l, sig2l, m,distance);
+			if(current!=-1)
+			{
+				distance = current;
+			}
 
-			if (current < distance) distance = current;
-
-		} while (std::next_permutation(perm2, perm2 + sig2l));
+//		} while (std::next_permutation(perm2, perm2 + sig2l));
 	} while (std::next_permutation(perm1, perm1 + sig1l));
+
+
+	clock_t timeElapsed = clock() - start;
+	msElapsed = timeElapsed / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << distance << "\n";
 
 	return distance;
 }

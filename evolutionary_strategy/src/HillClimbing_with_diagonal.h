@@ -22,13 +22,16 @@
 #include "ES_MatchingSchema.h"
 #include "Utility.h"
 
+#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
+
 int hill_climbing_d(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
 		const size_t& sig1l, const size_t& sig2l, const size_t& p1,
 		matching_schema<bool>& m, edit_distance& e)
 {
-
+	clock_t start = clock();
+	long double msElapsed = 0;
 	//std::cout << "enter the void (1)" << endl;
 
 	unsigned d = e.edit_distance_matching_schema(s1, s2, s1l, s2l, m);
@@ -65,6 +68,10 @@ int hill_climbing_d(const std::vector<unsigned>& s1,
 	unsigned tries = 0, k_shuffle = 0;
 
 	//std::cout << "start: " << d << endl;
+
+	clock_t timeElapsed = clock() - start;
+	msElapsed = timeElapsed / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << minMinDist << "\n";
 
 	bool improved = true;
 	while (improved)
@@ -112,6 +119,7 @@ int hill_climbing_d(const std::vector<unsigned>& s1,
 
 				}
 			}
+
 		}
 
 		if (improved)
@@ -160,6 +168,10 @@ int hill_climbing_d(const std::vector<unsigned>& s1,
 						s2l, sigma1_o, sigma2_o, sig1l, sig2l, m);
 			}
 		}
+		clock_t timeElapsed = clock() - start;
+		msElapsed = timeElapsed / CLOCKS_PER_MS;
+		std::cout << msElapsed << " " << minMinDist << "\n";
+
 	}
 
 	delete[] sigma1_o;
