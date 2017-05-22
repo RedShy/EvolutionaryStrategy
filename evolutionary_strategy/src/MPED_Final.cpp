@@ -20,7 +20,6 @@
 #include "(1+1)-ES.h"
 #include "(1+1)-ES_SRS.h"
 #include "(mu+lambda)-ES_AF.h"
-#include "(1+1)-ES_SA.h"
 #include "(1+1)-ES_RS.h"
 
 /* Definitions */
@@ -192,17 +191,17 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 1, 1, 1);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 3000, 10, 20);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000,0);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 0);
 		}
 		else if (heuristic == _ES_ONE_ONE_SRS_ARG)
 		{
 			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 100);
+					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10);
 		}
 		else if (heuristic == _ES_AF_ARG)
 		{
