@@ -100,7 +100,7 @@ int evolutionStrategy_WP_H(const std::vector<unsigned>& s1,
 			ES_MatchingSchema child = parents[p];
 
 			//mutate child
-			child.mutate();
+			child.swap2();
 
 			//validate child
 			if (ES_isValid(child))

@@ -1,12 +1,13 @@
 /*
- * HillClimbing.h
+ * HillClimbing_with_diagonal.h
  *
  *  Created on: 05 apr 2017
  *      Author: RedShy
  */
 
-#ifndef SRC_HILLCLIMBING_H_
-#define SRC_HILLCLIMBING_H_
+#ifndef SRC_HILLCLIMBING_WITH_DIAGONAL_H_
+#define SRC_HILLCLIMBING_WITH_DIAGONAL_H_
+
 #include <iostream>
 #include <map>
 #include <numeric>
@@ -21,15 +22,23 @@
 #include "ES_MatchingSchema.h"
 #include "Utility.h"
 
+#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
+
 int hill_climbing(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
 		const size_t& sig1l, const size_t& sig2l, const size_t& p1,
 		matching_schema<bool>& m, edit_distance& e)
 {
+	clock_t start = clock();
+	long double msElapsed = 0;
+	//std::cout << "enter the void (1)" << endl;
+
 	unsigned d = e.edit_distance_matching_schema(s1, s2, s1l, s2l, m);
 	unsigned minDist = d;
 	unsigned minMinDist = minDist;
+
+	//std::cout << "enter the void (2)" << endl;
 
 	// for the permutations
 	unsigned* sigma1_o = new unsigned[sig1l];
@@ -41,6 +50,8 @@ int hill_climbing(const std::vector<unsigned>& s1,
 	unsigned* sigma2_t = new unsigned[sig2l];
 	std::iota(sigma2_t, sigma2_t + sig2l, 0);
 
+	//std::cout << "enter the void (3)" << endl;
+
 	// for fixpoints
 	unsigned* sigma1_min = new unsigned[sig1l];
 	std::iota(sigma1_min, sigma1_min + sig1l, 0);
@@ -51,8 +62,16 @@ int hill_climbing(const std::vector<unsigned>& s1,
 	unsigned* sigma2_min_min = new unsigned[sig2l];
 	std::iota(sigma2_min_min, sigma2_min_min + sig2l, 0);
 
+	//std::cout << "enter the void (4)" << endl;
+
 	size_t attempts = 1, shuffle_tries = 2;
 	unsigned tries = 0, k_shuffle = 0;
+
+	//std::cout << "start: " << d << endl;
+
+	clock_t timeElapsed = clock() - start;
+	msElapsed = timeElapsed / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << minMinDist << "\n";
 
 	bool improved = true;
 	while (improved)
@@ -80,9 +99,8 @@ int hill_climbing(const std::vector<unsigned>& s1,
 
 							int newDistance =
 									e.edit_distance_matching_schema_enhanced_with_diagonal(
-											s1,
-											s2, s1l, s2l, sigma1_o, sigma2_o,
-											sig1l, sig2l, m, minDist);
+											s1, s2, s1l, s2l, sigma1_o,
+											sigma2_o, sig1l, sig2l, m, minDist);
 
 							if (newDistance != -1)
 							{
@@ -101,6 +119,7 @@ int hill_climbing(const std::vector<unsigned>& s1,
 
 				}
 			}
+
 		}
 
 		if (improved)
@@ -149,6 +168,10 @@ int hill_climbing(const std::vector<unsigned>& s1,
 						s2l, sigma1_o, sigma2_o, sig1l, sig2l, m);
 			}
 		}
+		clock_t timeElapsed = clock() - start;
+		msElapsed = timeElapsed / CLOCKS_PER_MS;
+		std::cout << msElapsed << " " << minMinDist << "\n";
+
 	}
 
 	delete[] sigma1_o;
@@ -160,8 +183,8 @@ int hill_climbing(const std::vector<unsigned>& s1,
 	delete[] sigma2_min;
 	delete[] sigma2_min_min;
 
-	std::cout << minMinDist;
 	return minMinDist;
 }
 
-#endif /* SRC_HILLCLIMBING_H_ */
+
+#endif /* SRC_HILLCLIMBING_WITH_DIAGONAL_H_ */

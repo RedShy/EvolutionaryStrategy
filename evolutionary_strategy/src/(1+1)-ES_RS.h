@@ -60,7 +60,7 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		ES_MatchingSchema child = parent;
 
 		//mutate child
-		child.mutate();
+		child.swap2();
 
 		if (ES_isValid(child))
 		{

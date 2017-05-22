@@ -15,30 +15,13 @@
 #include "Utility.h"
 /* Solvers */
 #include "HillClimbing.h"
-#include "HillClimbing_with_diagonal.h"
 #include "BruteForce.h"
-#include "(mu+lambda)-ES.h"
 #include "(mu+lambda)-ES_WP.h"
-#include "(mu+lambda)-ES_GWP.h"
-#include "(mu+lambda)-ES_WP_H.h"
-#include "(mu+lambda)-ES_WP_start_with.h"
-#include "(mu+lambda)-ES_WP_swap3.h"
-#include "(mu+lambda)-ES_WP_swap2_swap3.h"
-#include "(mu+lambda)-ES_WP_swap2_pi.h"
-#include "(mu+lambda)-ES_WP_inversion.h"
-#include "(mu+lambda)-ES_WP_scramble.h"
-#include "(mu+lambda)-ES_WP_translocation.h"
-#include "(mu+lambda)-ES_AF.h"
-#include "(mu+lambda)-ES_BWP.h"
 #include "(1+1)-ES.h"
-#include "(1+1)-ES_start_with.h"
-#include "(1+1)-ES_BSRS.h"
+#include "(1+1)-ES_SRS.h"
+#include "(mu+lambda)-ES_AF.h"
 #include "(1+1)-ES_SA.h"
 #include "(1+1)-ES_RS.h"
-#include "(1+1)-ES_SRS.h"
-
-#include "optimizer.h"
-
 
 /* Definitions */
 #define endl '\n'
@@ -48,19 +31,13 @@
 const unsigned short _ASCII_LEN = 255 - 0;
 const bool _DEBUG = false;
 const std::string _HC_ARG("hc");
-const std::string _HCD_ARG("hcd");
 const std::string _BRUTEFORCE_ARG("ex");
-const std::string _ES_ARG("es");
 const std::string _ES_WP_ARG("es_wp");
-const std::string _ES_BWP_ARG("es_bwp");
-const std::string _ES_AF_ARG("es_af");
 const std::string _ES_ONE_ONE_ARG("es_one_one");
+const std::string _ES_ONE_ONE_SRS_ARG("es_one_one_srs");
+const std::string _ES_AF_ARG("es_af");
 const std::string _ES_ONE_ONE_SA_ARG("es_one_one_sa");
 const std::string _ES_ONE_ONE_RS_ARG("es_one_one_rs");
-const std::string _ES_ONE_ONE_SRS_ARG("es_one_one_srs");
-const std::string _ES_ONE_ONE_BSRS_ARG("es_one_one_bsrs");
-const std::string _ES_ONE_LAMBDA_ARG("es_one_lambda");
-const std::string _ES_OPTIMIZER_ARG("es_optB");
 const std::string _SPECIFIC_PMS("specific-permutations");
 const std::string _SPECIFIC_MMS("specific-matrix");
 
@@ -212,291 +189,30 @@ int main(int argc, char *argv[])
 			distance = hill_climbing(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
 					sigma1l, sigma2l, p1, ms, e);
 		}
-		else if (heuristic == _HCD_ARG)
-		{
-			distance = hill_climbing_d(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
-					sigma1l, sigma2l, p1, ms, e);
-		}
-		else if (heuristic == _ES_ARG)
-		{
-			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i, sigma2i,
-					sigma1l, sigma2l, p1, ms, e, 20, 6, 22, true);
-		}
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 1, 1, 1);
 		}
-		else if (heuristic == "es-wp-7000-15-1")
-		{
-			distance = evolutionStrategy_WP_sw(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 7000, 15, 1);
-		}
-		else if (heuristic == "es-wp-350-15-20")
-		{
-			distance = evolutionStrategy_WP_sw(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 350, 15, 20);
-		}
-		else if (heuristic == "es-one+one-7000")
-		{
-			distance = evolutionStrategy_one_one_sw(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 7000);
-		}
-		else if (heuristic == "es-srs-one+one-700-10")
-		{
-			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 700,10);
-		}
-		else if (heuristic == "es_wp-200-5-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "es_wp-200-10-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 10, 72);
-		}
-		else if (heuristic == "es_wp-200-15-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 15, 72);
-		}
-		else if (heuristic == "es_wp-200-20-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 20, 72);
-		}
-		else if (heuristic == "es_wp-200-25-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 25, 72);
-		}
-		else if (heuristic == "es_wp-200-30-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 30, 72);
-		}
-		else if (heuristic == "es_wp-200-35-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 35, 72);
-		}
-		else if (heuristic == "es_wp-200-40-72")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 40, 72);
-		}
-
-		else if (heuristic == "5")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 5, 72);
-		}
-		else if (heuristic == "10")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 10, 72);
-		}
-		else if (heuristic == "15")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 15, 72);
-		}
-		else if (heuristic == "20")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 20, 72);
-		}
-		else if (heuristic == "25")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 25, 72);
-		}
-		else if (heuristic == "30")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 30, 72);
-		}
-		else if (heuristic == "35")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 35, 72);
-		}
-		else if (heuristic == "40")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 150, 40, 72);
-		}
-		else if (heuristic == "g1")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 1, 1);
-		}
-		else if (heuristic == "g2")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 2, 1);
-		}
-		else if (heuristic == "g3")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 3, 1);
-		}
-		else if (heuristic == "g4")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 4, 1);
-		}
-		else if (heuristic == "g5")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 5, 1);
-		}
-		else if (heuristic == "g10")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 10, 1);
-		}
-		else if (heuristic == "g15")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 10, 1);
-		}
-		else if (heuristic == "g20")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 20, 1);
-		}
-		else if (heuristic == "g25")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 25, 1);
-		}
-		else if (heuristic == "g30")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 30, 1);
-		}
-		else if (heuristic == "g35")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 35, 1);
-		}
-		else if (heuristic == "g40")
-		{
-			distance = evolutionStrategy_GWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 15000, 40, 1);
-		}
-		else if (heuristic == "swap2")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "swap2B")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "swap2_pi")
-		{
-			distance = evolutionStrategy_WP_swap2_pi(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "swap3")
-		{
-			distance = evolutionStrategy_WP_swap3(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "swap3B")
-		{
-			distance = evolutionStrategy_WP_swap3(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "swap2_swap3")
-		{
-			distance = evolutionStrategy_WP_swap2_swap3(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "swap2_swap3B")
-		{
-			distance = evolutionStrategy_WP_swap2_swap3(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "scramble")
-		{
-			distance = evolutionStrategy_WP_scramble(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "scrambleB")
-		{
-			distance = evolutionStrategy_WP_scramble(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "inversion")
-		{
-			distance = evolutionStrategy_WP_inversion(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "inversionB")
-		{
-			distance = evolutionStrategy_WP_inversion(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "translocation")
-		{
-			distance = evolutionStrategy_WP_translocation(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-		else if (heuristic == "translocationB")
-		{
-			distance = evolutionStrategy_WP_translocation(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-		}
-
-		else if (heuristic == _ES_BWP_ARG)
-		{
-			distance = evolutionStrategy_BWP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 200, 5, 72, 4);
-		}
-		else if (heuristic == _ES_AF_ARG)
-		{
-			distance = evolutionStrategy_AF(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 5, 18);
-		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
-			distance = evolutionStrategy_one_one_sw(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
-		}
-		else if (heuristic == _ES_ONE_ONE_SA_ARG)
-		{
-			distance = evolutionStrategy_one_one_sa(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 1000);
+			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000,0);
 		}
 		else if (heuristic == _ES_ONE_ONE_SRS_ARG)
 		{
 			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
 					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 100);
 		}
-		else if (heuristic == _ES_ONE_ONE_BSRS_ARG)
+		else if (heuristic == _ES_AF_ARG)
 		{
-			distance = evolutionStrategy_one_one_bsrs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10, 4);
+			distance = evolutionStrategy_AF(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 20, 5, 18);
 		}
 		else if (heuristic == _ES_ONE_ONE_RS_ARG)
 		{
 			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
-		}
-		else if (heuristic == _ES_ONE_LAMBDA_ARG)
-		{
-			//TODO
-		}
-		else if (heuristic == _ES_OPTIMIZER_ARG)
-		{
-			distance = optimizer(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
-					sigma2l, p1, ms, e, 30, 20, 74);
 		}
 		clock_t timeElapsed = clock() - start;
 		clock_gettime(CLOCK_MONOTONIC, &finish1);

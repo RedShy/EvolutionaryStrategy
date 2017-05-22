@@ -135,7 +135,7 @@ void evolutionStrategy_WP_t(const std::vector<unsigned>& s1,
 
 
 				//mutate child
-			child.mutate();
+			child.swap2();
 
 			//validate child
 			if (ES_isValid(child))

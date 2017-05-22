@@ -1,4 +1,3 @@
-
 /*
  * (1+1)-ES_RA.h
  *
@@ -32,13 +31,14 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 	clock_t start = clock();
 	long double msElapsed = 0;
 
-	unsigned totalGeneration=0;
+	//Just for printing, no other purpose
+	unsigned totalGeneration = 0;
 
-//	const unsigned maxPlateu = 50 * p1;
-	unsigned attempts = 0;
 	ES_MatchingSchema parent(sig1, sig2);
-	//Random start
+
+	//Random start, delete shuffle for starting with a given matching schema
 	parent.shuffle();
+
 	parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
 			s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
 
@@ -46,12 +46,13 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 
 	clock_t timeElapsed1 = clock() - start;
 	msElapsed = timeElapsed1 / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " <<totalGeneration<<" " << best.costValue << "\n";
+	std::cout << msElapsed << " " << totalGeneration << " " << best.costValue
+			<< "\n";
 
+	unsigned attempts = 0;
 	while (attempts < maxAttempts)
 	{
 		unsigned generation = 0;
-//		unsigned plateu = 0;
 
 		while (generation <= max_generations)
 		{
@@ -59,74 +60,48 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 			ES_MatchingSchema child = parent;
 
 			//mutate child
-			child.mutate();
+			child.swap2();
 
-			//validate child
-			if (ES_isValid(child))
+			int newDistance =
+					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
+							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
+							sig2l, m, parent.costValue);
+
+			if (newDistance != -1)
 			{
-				int newDistance =
-						e.edit_distance_matching_schema_enhanced_with_diagonal(
-								s1, s2, s1l, s2l, child.sigma1, child.sigma2,
-								sig1l, sig2l, m, parent.costValue);
+				//The child is better than its father, so he become new parent
+				parent = child;
+				parent.costValue = newDistance;
 
-				if (newDistance != -1)
+				if (parent.costValue < best.costValue)
 				{
-					//The child is better than its father, so he become new parent
-					parent = child;
-					parent.costValue = newDistance;
+					best.costValue = parent.costValue;
 
-//					plateu = 0;
-
-					if (parent.costValue < best.costValue)
-					{
-						best.costValue = parent.costValue;
-
-						clock_t timeElapsed = clock() - start;
-						msElapsed = timeElapsed / CLOCKS_PER_MS;
-						std::cout << msElapsed << " "<<totalGeneration<<" " << best.costValue << "\n";
-					}
+					clock_t timeElapsed = clock() - start;
+					msElapsed = timeElapsed / CLOCKS_PER_MS;
+					std::cout << msElapsed << " " << totalGeneration << " "
+							<< best.costValue << "\n";
 				}
-//				else
-//				{
-//					plateu++;
-//					if (plateu == maxPlateu)
-//					{
-//						break;
-//					}
-//				}
-				//else the child is worse than its father so he is discarded
-			}
-			else
-			{
-				//TODO: not valid, maybe mutate until is valid?
-				//repeat iteration
-				continue;
 			}
 
 			generation++;
+
+			//For printing stuff
 			totalGeneration++;
 		}
-
-//		//check if the last attempt has improved the solution
-//		if (parent.costValue < best.costValue)
-//		{
-//			best = parent;
-//		}
-//
-//		clock_t timeElapsed = clock() - start;
-//		msElapsed = timeElapsed / CLOCKS_PER_MS;
-//		std::cout << msElapsed << " " << best.costValue << "\n";
 
 		//Random restart
 		parent.shuffle();
 		parent.costValue = e.edit_distance_matching_schema_enhanced(s1, s2, s1l,
 				s2l, parent.sigma1, parent.sigma2, sig1l, sig2l, m);
+
 		attempts++;
 	}
 
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " "<<totalGeneration<<" " << best.costValue << "\n";
+	std::cout << msElapsed << " " << totalGeneration << " " << best.costValue
+			<< "\n";
 	return best.costValue;
 }
 
