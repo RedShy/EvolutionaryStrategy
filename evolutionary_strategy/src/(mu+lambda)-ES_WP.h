@@ -62,6 +62,9 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		}
 	}
 
+	const unsigned last = mu - 1;
+	std::make_heap(parents, parents + mu);
+
 	unsigned generation = 0;
 	while (generation <= max_generations)
 	{
@@ -77,17 +80,8 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			//mutate child
 			child.swap2();
 
-			//select the worst parent, mu is always very very small like 5 or 10
+			//select the worst parent: is the first element of the heap
 			unsigned worstParentCostValue = parents[0].costValue;
-			unsigned worstParent = 0;
-			for (unsigned i = 1; i < mu; i++)
-			{
-				if (parents[i].costValue > worstParentCostValue)
-				{
-					worstParentCostValue = parents[i].costValue;
-					worstParent = i;
-				}
-			}
 
 			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
@@ -98,7 +92,11 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			{
 				//The child is better than the worst parent, so he become a new parent
 				child.costValue = newDistance;
-				parents[worstParent] = child;
+
+				//substitute the worst parent in the heap
+				std::pop_heap(parents, parents + mu);
+				parents[last] = child;
+				std::push_heap(parents, parents + mu);
 
 				if (child.costValue < best.costValue)
 				{
