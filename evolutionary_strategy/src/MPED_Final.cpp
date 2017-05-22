@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 3000, 10, 20);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 2000, 10, 20);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
