@@ -6,7 +6,9 @@
  */
 #ifndef SRC_ES_MATCHINGSCHEMA_H_
 #define SRC_ES_MATCHINGSCHEMA_H_
-#include<vector>
+
+#include <vector>
+#include <algorithm>
 
 
 

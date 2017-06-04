@@ -42,7 +42,9 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 	best.costValue=std::numeric_limits<unsigned int>::max();
 
 	//Generate mu random individuals
-	ES_MatchingSchema parents[mu];
+	// TODO: not compatible with g++ version < 5
+	//ES_MatchingSchema parents[mu];
+	std::vector<ES_MatchingSchema> parents(mu);
 	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMS.shuffle();
@@ -63,7 +65,8 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 	}
 
 	const unsigned last = mu - 1;
-	std::make_heap(parents, parents + mu);
+	//std::make_heap(parents, parents + mu);
+	std::make_heap(parents.begin(), parents.end());
 
 	unsigned generation = 0;
 	while (generation <= max_generations)
@@ -94,9 +97,11 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 				child.costValue = newDistance;
 
 				//substitute the worst parent in the heap
-				std::pop_heap(parents, parents + mu);
+				//std::pop_heap(parents, parents + mu);
+				std::pop_heap(parents.begin(), parents.end());
 				parents[last] = child;
-				std::push_heap(parents, parents + mu);
+				//std::push_heap(parents, parents + mu);
+				std::push_heap(parents.begin(), parents.end());
 
 				if (child.costValue < best.costValue)
 				{

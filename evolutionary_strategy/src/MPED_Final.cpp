@@ -24,7 +24,7 @@
 
 /* Definitions */
 #define endl '\n'
-#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
+//#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
 /* Consts */
 const unsigned short _ASCII_LEN = 255 - 0;
@@ -141,8 +141,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* identity (classical) matching schema */
-	matching_schema<bool> ms(sigma1l, sigma2l, p1, p2, true,
-			default_constraints_mode);
+	matching_schema<bool> ms(sigma1l, sigma2l, p1, p2, true, default_constraints_mode);
 	ms.set_general(sigma1, sigma2, false);
 
 
@@ -167,17 +166,20 @@ int main(int argc, char *argv[])
 	/* create an edit distance object */
 	edit_distance e;
 
-	struct timespec start1, finish1;
-	double elapsed;
+	//struct timespec start1, finish1;
+	//double elapsed;
+	//double msElapsed = 0;
 
 	/* here we call the solver needed */
 	int distance = -1;
-	double msElapsed = 0;
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 		{
-		clock_gettime(CLOCK_MONOTONIC, &start1);
-		clock_t start = clock();
+
+		// TODO: find a high resolution clock closs-compilers
+		//clock_gettime(CLOCK_MONOTONIC, &start1);
+		//clock_t start = clock();
+
 		if (heuristic == _BRUTEFORCE_ARG)
 		{
 			distance = bruteforce(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
@@ -213,12 +215,13 @@ int main(int argc, char *argv[])
 			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
 		}
-		clock_t timeElapsed = clock() - start;
-		clock_gettime(CLOCK_MONOTONIC, &finish1);
-		msElapsed = timeElapsed / CLOCKS_PER_MS;
 
-		elapsed = (finish1.tv_sec - start1.tv_sec);
-		elapsed += (finish1.tv_nsec - start1.tv_nsec) / 1000000000.0;
+		//clock_t timeElapsed = clock() - start;
+		//clock_gettime(CLOCK_MONOTONIC, &finish1);
+		//msElapsed = timeElapsed / CLOCKS_PER_MS;
+
+		//elapsed = (finish1.tv_sec - start1.tv_sec);
+		//elapsed += (finish1.tv_nsec - start1.tv_nsec) / 1000000000.0;
 
 	}
 	// For a specific matching schema

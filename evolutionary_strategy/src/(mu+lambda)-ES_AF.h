@@ -47,7 +47,9 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 	ES_MatchingSchema startingMS(sig1, sig2);
 
 	//Generate mu random individuals
-	ES_MatchingSchema parents[mu];
+	// TODO: not compatible with g++ version < 5
+	//ES_MatchingSchema parents[mu];
+	std::vector<ES_MatchingSchema> parents(mu);
 	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMS.shuffle();
