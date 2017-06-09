@@ -24,7 +24,7 @@
 
 /* Definitions */
 #define endl '\n'
-//#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
+#define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
 /* Consts */
 const unsigned short _ASCII_LEN = 255 - 0;

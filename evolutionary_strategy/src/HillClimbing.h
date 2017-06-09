@@ -32,6 +32,7 @@ int hill_climbing(const std::vector<unsigned>& s1,
 {
 	clock_t start = clock();
 	long double msElapsed = 0;
+
 	//std::cout << "enter the void (1)" << endl;
 
 	unsigned d = e.edit_distance_matching_schema(s1, s2, s1l, s2l, m);
@@ -106,6 +107,12 @@ int hill_climbing(const std::vector<unsigned>& s1,
 							{
 								minDist = newDistance;
 
+								if (minDist <= minMinDist) {
+									clock_t timeElapsed = clock() - start;
+									msElapsed = timeElapsed / CLOCKS_PER_MS;
+									std::cout << msElapsed << " " << minDist << "\n";
+								}
+
 								improved = true;
 								std::copy(sigma1_o, sigma1_o + sig1l,
 										sigma1_min);
@@ -168,9 +175,6 @@ int hill_climbing(const std::vector<unsigned>& s1,
 						s2l, sigma1_o, sigma2_o, sig1l, sig2l, m);
 			}
 		}
-		clock_t timeElapsed = clock() - start;
-		msElapsed = timeElapsed / CLOCKS_PER_MS;
-		std::cout << msElapsed << " " << minMinDist << "\n";
 
 	}
 
