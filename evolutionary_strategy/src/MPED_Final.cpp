@@ -200,12 +200,12 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 14400, 10);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 14400, 10);
 		}
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 10, 30, 111);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 129, 30, 111);
 		}
 		else if (heuristic == "es-shuffle")
 		{
@@ -215,12 +215,12 @@ int main(int argc, char *argv[])
 		else if (heuristic == "es-400-10-18")
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 400, 10, 18);
+					sigma2i, sigma1l, sigma2l, p1, p2, ms, e, 400, 10, 18);
 		}
 		else if (heuristic == "es-85-10-85")
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 85, 10, 85);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 85, 10, 85);
 		}
 		else if (heuristic == "es-wp-rs")
 		{
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
 			for(int i=0; i<1; i++)
 			{
 				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-						sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10);
+						sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 5000, 10);
 			}
 			distance=sum/10;
 			std::cout<<distance;
@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
 			for(int i=0; i<1; i++)
 			{
 				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-						sigma2i, sigma1l, sigma2l, p1, ms, e, 2500, 10);
+						sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 2500, 10);
 			}
 			distance=sum/10;
 			std::cout<<distance;
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 			for(int i=0; i<1; i++)
 			{
 				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-						sigma2i, sigma1l, sigma2l, p1, ms, e, 1000, 10);
+						sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 1000, 10);
 			}
 			distance=sum/10;
 			std::cout<<distance;
@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == "es-wp-7200-10-1")
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 7200, 10);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 7200, 10);
 		}
 		else if (heuristic == "es-wp-30000")
 		{
@@ -297,22 +297,22 @@ int main(int argc, char *argv[])
 		else if (heuristic == "es-one-one")
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 7200, 0);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 7200, 0);
 		}
 		else if (heuristic == "es-one-one-srs")
 		{
 			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 1440, 10);
+					sigma1i, sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 1440, 10);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 7200, 0);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 7200, 0);
 		}
 		else if (heuristic == _ES_ONE_ONE_SRS_ARG)
 		{
 			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 1440, 5);
+					sigma1i, sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 1440, 5);
 		}
 		else if (heuristic == _ES_AF_ARG)
 		{

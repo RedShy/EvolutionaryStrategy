@@ -18,23 +18,6 @@
 #include "EditDistance.h"
 #include "MatchingSchema.h"
 
-const unsigned * const initializeBlocksSwap2E(const std::vector<unsigned>& sig,
-		const size_t& p)
-{
-	unsigned * const blocksig = new unsigned[sig.size()];
-	unsigned marker = 0;
-	blocksig[0] = 0;
-	for (unsigned i = 1; i < sig.size(); ++i)
-	{
-		if (i % p == 0)
-		{
-			++marker;
-		}
-		blocksig[i] = marker;
-	}
-	return blocksig;
-}
-
 int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 

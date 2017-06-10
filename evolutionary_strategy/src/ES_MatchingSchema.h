@@ -8,6 +8,22 @@
 #define SRC_ES_MATCHINGSCHEMA_H_
 #include<vector>
 
+const unsigned * const initializeBlocksSwap2E(const std::vector<unsigned>& sig,
+		const size_t& p)
+{
+	unsigned * const blocksig = new unsigned[sig.size()];
+	unsigned marker = 0;
+	blocksig[0] = 0;
+	for (unsigned i = 1; i < sig.size(); ++i)
+	{
+		if (i % p == 0)
+		{
+			++marker;
+		}
+		blocksig[i] = marker;
+	}
+	return blocksig;
+}
 
 
 struct ES_MatchingSchema
@@ -39,18 +55,6 @@ struct ES_MatchingSchema
 			std::iota(sigma2, sigma2 + _sigma_2.size(), 0);
 
 
-		}
-
-		ES_MatchingSchema(const std::vector<unsigned>&_sigma_1,
-				const std::vector<unsigned>&_sigma_2) :
-				costValue(0), sigma1l(
-						_sigma_1.size()), sigma2l(_sigma_2.size())
-		{
-			sigma1 = new unsigned[_sigma_1.size()];
-			std::iota(sigma1, sigma1 + _sigma_1.size(), 0);
-
-			sigma2 = new unsigned[_sigma_2.size()];
-			std::iota(sigma2, sigma2 + _sigma_2.size(), 0);
 		}
 
 		ES_MatchingSchema(const ES_MatchingSchema& m) :
