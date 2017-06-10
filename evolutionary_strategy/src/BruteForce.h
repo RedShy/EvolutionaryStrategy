@@ -14,6 +14,7 @@
 #include <ctime>
 #include <vector>
 #include <bitset>
+#include <map>
 
 #define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
@@ -38,24 +39,58 @@ int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 
 	FixedED<unsigned> fixed_ed(s1l + 1, s2l + 1);
 
+	unsigned int computed=1;
+	unsigned int totalPermutations=1;
+	for(int i=1; i<=sig1l; i++)
+	{
+		totalPermutations*=i;
+	}
+
+	std::map<int,int> editDistances=std::map<int,int>();
 	do
 	{
+
 //		do
 //		{
-			current = e.edit_distance_matching_schema_enhanced_with_diagonal(s1, s2,
-					s1l, s2l, perm1, perm2, sig1l, sig2l, m,distance);
-			if(current!=-1)
-			{
-				distance = current;
-			}
+			current = e.edit_distance_matching_schema_enhanced(s1, s2,
+					s1l, s2l, perm1, perm2, sig1l, sig2l, m);
+//			if(current!=-1)
+//			{
+//				distance = current;
+//			}
 
 //		} while (std::next_permutation(perm2, perm2 + sig2l));
+
+		if(current < distance)
+		{
+			distance=current;
+		}
+
+		editDistances[current]++;
+
+		computed++;
+
+		if(computed % 1000 == 0)
+		{
+			clock_t timeElapsed = clock() - start;
+			msElapsed = timeElapsed / CLOCKS_PER_MS;
+
+			std::cout << " Computing permutation number " << computed << " on "<<totalPermutations <<" total. Edit Distance: "<<distance<<" Time: "<<msElapsed<< "\n";
+		}
+
 	} while (std::next_permutation(perm1, perm1 + sig1l));
 
+	std::cout<<"RESULTS:"<<std::endl;
 
-	clock_t timeElapsed = clock() - start;
-	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " << distance << "\n";
+	for(std::map<int,int>::iterator i=editDistances.begin(); i!=editDistances.end(); ++i)
+	{
+		double percent= (i->second/(double) totalPermutations) * 100;
+		std::cout<<"Edit distance: "<<i->first <<" Encountered: "<<i->second<<" Percentage: "<<percent<<" % of total"<<std::endl;
+	}
+
+//	clock_t timeElapsed = clock() - start;
+//	msElapsed = timeElapsed / CLOCKS_PER_MS;
+//	std::cout << msElapsed << " " << distance << "\n";
 
 	return distance;
 }

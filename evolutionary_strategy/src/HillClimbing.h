@@ -106,6 +106,13 @@ int hill_climbing(const std::vector<unsigned>& s1,
 							{
 								minDist = newDistance;
 
+								if(minDist < minMinDist)
+								{
+									clock_t timeElapsed = clock() - start;
+									msElapsed = timeElapsed / CLOCKS_PER_MS;
+									std::cout << msElapsed << " " << minDist << "\n";
+								}
+
 								improved = true;
 								std::copy(sigma1_o, sigma1_o + sig1l,
 										sigma1_min);
@@ -168,10 +175,6 @@ int hill_climbing(const std::vector<unsigned>& s1,
 						s2l, sigma1_o, sigma2_o, sig1l, sig2l, m);
 			}
 		}
-		clock_t timeElapsed = clock() - start;
-		msElapsed = timeElapsed / CLOCKS_PER_MS;
-		std::cout << msElapsed << " " << minMinDist << "\n";
-
 	}
 
 	delete[] sigma1_o;
@@ -182,6 +185,10 @@ int hill_climbing(const std::vector<unsigned>& s1,
 	delete[] sigma1_min_min;
 	delete[] sigma2_min;
 	delete[] sigma2_min_min;
+
+	timeElapsed = clock() - start;
+	msElapsed = timeElapsed / CLOCKS_PER_MS;
+	std::cout << msElapsed << " " << minMinDist << "\n";
 
 	return minMinDist;
 }

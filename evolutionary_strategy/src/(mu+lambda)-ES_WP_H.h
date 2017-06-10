@@ -129,7 +129,6 @@ int evolutionStrategy_WP_H(const std::vector<unsigned>& s1,
 						clock_t timeElapsed = clock() - start;
 						msElapsed = timeElapsed / CLOCKS_PER_MS;
 						std::cout << msElapsed << " " << best.costValue << "\n";
-
 					}
 				}
 
@@ -149,6 +148,7 @@ int evolutionStrategy_WP_H(const std::vector<unsigned>& s1,
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
 	std::cout << msElapsed << " " << best.costValue << "\n";
+
 
 	return best.costValue;
 

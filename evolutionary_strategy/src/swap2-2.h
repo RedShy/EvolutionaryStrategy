@@ -1,12 +1,12 @@
 /*
- * (mu+lambda)-ES.h
+ * (mu+lambda)-ES_WP.h
  *
- *  Created on: 05 giu 2017
- *      Author: HantolR
+ *  Created on: 04 apr 2017
+ *      Author: RedShy
  */
 
-#ifndef SRC__MU_LAMBDA__ES_H_
-#define SRC__MU_LAMBDA__ES_H_
+#ifndef mu_lambda_ES_WP_sw2_2
+#define mu_lambda_ES_WP_sw2_2
 
 #include <iostream>
 #include <vector>
@@ -21,7 +21,7 @@
 
 #define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
-int evolutionStrategy(const std::vector<unsigned>& s1,
+int evolutionStrategy_WP_swap2_2(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
@@ -37,11 +37,12 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 
 	ES_MatchingSchema startingMS(sig1, sig2);
 
+	//Keep the best only for printing intermediate results, is useless otherwise
 	ES_MatchingSchema best;
-	best.costValue = std::numeric_limits<unsigned int>::max();
+	best.costValue=std::numeric_limits<unsigned int>::max();
 
 	//Generate mu random individuals
-	ES_MatchingSchema* const parents = new ES_MatchingSchema[mu + lambda];
+	ES_MatchingSchema * const parents = new ES_MatchingSchema[mu];
 	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMS.shuffle();
@@ -49,7 +50,6 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 		startingMS.costValue = e.edit_distance_matching_schema_enhanced(s1, s2,
 				s1l, s2l, startingMS.sigma1, startingMS.sigma2, sig1l, sig2l,
 				m);
-
 		parents[i] = startingMS;
 
 		if (parents[i].costValue < best.costValue)
@@ -58,47 +58,45 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 
 			clock_t timeElapsed = clock() - start;
 			msElapsed = timeElapsed / CLOCKS_PER_MS;
-			std::cout << msElapsed << " " << best.costValue << "\n";
+//			std::cout << msElapsed << " " << best.costValue << "\n";
 		}
-
 	}
 
 	const unsigned last = mu - 1;
-
-	std::sort(parents, parents + mu);
-	unsigned worstParentCostValue = parents[last].costValue;
-	std::random_shuffle(parents,parents+mu);
+	std::make_heap(parents, parents + mu);
 
 	unsigned generation = 0;
 	while (generation <= max_generations)
 	{
-		unsigned childrenInPool = 0;
-
 		//Generate lambda children. Only mutation, no recombination
 		for (unsigned i = 0; i < lambda; i++)
 		{
 			//Choose random parent
-			const unsigned p = rand() % mu;
+			unsigned p = rand() % mu;
 
-			//Produce child, in the case parents=1 (like this) just clone
+			//Produce child: just clone the parent
 			ES_MatchingSchema child = parents[p];
 
 			//mutate child
-			child.swap2();
+			child.swap2(2);
 
-			const int newDistance =
+			//select the worst parent: is the first element of the heap
+			unsigned worstParentCostValue = parents[0].costValue;
+
+			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
 							sig2l, m, worstParentCostValue);
 
 			if (newDistance != -1)
 			{
-				//The child is better than the worst parent,
+				//The child is better than the worst parent, so he become a new parent
 				child.costValue = newDistance;
 
-				//so he is added to the pool
-				parents[mu + childrenInPool] = child;
-				childrenInPool++;
+				//substitute the worst parent in the heap
+				std::pop_heap(parents, parents + mu);
+				parents[last] = child;
+				std::push_heap(parents, parents + mu);
 
 				if (child.costValue < best.costValue)
 				{
@@ -106,30 +104,22 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 
 					clock_t timeElapsed = clock() - start;
 					msElapsed = timeElapsed / CLOCKS_PER_MS;
-					std::cout << msElapsed << " " << best.costValue << "\n";
+//					std::cout << msElapsed << " " << best.costValue << "\n";
 				}
 			}
 		}
-
-		std::sort(parents, parents+mu+childrenInPool);
-
-		worstParentCostValue = parents[last].costValue;
-
-		std::random_shuffle(parents,parents+mu);
-
 		generation++;
 	}
 
+	delete[] parents;
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " << best.costValue << "\n";
+//	std::cout << msElapsed << " " << best.costValue << "\n";
 
 //	m.print_matching_schema(best.sigma1,best.sigma2);
 
-//	std::cout<<best.costValue;
-//	std::cout<<"CHIAMATE A EDIT DISTANCE= "<<edit_distance::tentativi<<"\n";
-			return best.costValue;
+	std::cout<<best.costValue;
+	return best.costValue;
 }
 
-
-#endif /* SRC__MU_LAMBDA__ES_H_ */
+#endif

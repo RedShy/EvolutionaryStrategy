@@ -10,6 +10,8 @@
 #include <unordered_map>
 //#include <tr1/unordered_map>
 
+		static unsigned tentativi=0;
+
 //Ho utilizzato pair_hash perchè unordered map non riusciva a definire l'hash per una key con pair<int,int>
 struct pair_hash
 {
@@ -294,7 +296,7 @@ struct edit_distance
 // tale funzione permette di calcolare la distanza se risulta essere inferiore al threshold
 // riducendo il tempo di esecuzione a O(k*m), calcolando solo una striscia di diagonali 2k+1.
 //
-
+		static unsigned tentativi;
 		int edit_distance_matching_schema_enhanced_with_diagonal(
 				const std::vector<unsigned>& s1,
 				const std::vector<unsigned>& s2, int s1l, int s2l,
@@ -302,6 +304,8 @@ struct edit_distance
 				const size_t& sig2l, const matching_schema<bool>& m,
 				int threshold)
 		{
+
+			tentativi++;
 
 			int MAX = std::numeric_limits<int>::max();
 
@@ -429,35 +433,6 @@ struct edit_distance
 
 			return my_dist;
 		}
-
-		/*unsigned edit_distance_matching_schema_enhanced(const std::vector<unsigned>& a, const std::vector<unsigned>& b, const size_t& al, const size_t& bl,
-		 const std::vector<unsigned>& sg1, const std::vector<unsigned>& sg2, const size_t& sg1l, const size_t& sg2l, const matching_schema<bool>& m) {
-
-		 unsigned** d = new unsigned*[al+1];
-		 for (size_t i = 0; i < al + 1; ++i) d[i] = new unsigned[bl+1];
-
-		 // (1) first row and first column
-		 for (size_t i = 0; i < al+1; ++i) d[i][0] = i;
-		 for (size_t j = 0; j < bl+1; ++j) d[0][j] = j;
-
-		 // (2) fill the matrix
-		 for (size_t i = 1; i < al+1; ++i){
-		 for (size_t j = 1; j < bl+1; ++j) {
-		 d[i][j] = min(
-		 d[i-1][j] + 1,																		// deletion
-		 d[i][j-1] + 1,																		// insertion
-		 d[i-1][j-1] + 1 * m.ms[index_of(a[i-1], sg1, sg1l)][index_of(b[j-1], sg2, sg2l)]	// if in the matching schema there's a false, they match
-		 );
-		 }
-		 }
-		 // (3) the computed distance
-		 unsigned my_dist = d[al][bl];
-
-		 for (size_t i = 0; i < al; ++i) delete[] d[i];
-		 delete[] d;
-
-		 return my_dist;
-		 }*/
 
 		unsigned edit_distance_matching_schema(const std::vector<unsigned>& a,
 				const std::vector<unsigned>& b, const size_t& al,
@@ -647,5 +622,5 @@ struct edit_distance
 		}
 
 };
-
+unsigned edit_distance::tentativi=0;
 #endif /* EDITDISTANCE_H_ */

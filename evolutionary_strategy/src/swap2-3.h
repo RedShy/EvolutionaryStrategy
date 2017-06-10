@@ -5,8 +5,8 @@
  *      Author: RedShy
  */
 
-#ifndef mu_lambda_ES_WP
-#define mu_lambda_ES_WP
+#ifndef mu_lambda_ES_WP_sw2_3
+#define mu_lambda_ES_WP_sw2_3
 
 #include <iostream>
 #include <vector>
@@ -21,7 +21,7 @@
 
 #define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
-int evolutionStrategy_WP(const std::vector<unsigned>& s1,
+int evolutionStrategy_WP_swap2_3(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
@@ -42,7 +42,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 	best.costValue=std::numeric_limits<unsigned int>::max();
 
 	//Generate mu random individuals
-	ES_MatchingSchema parents[mu];
+	ES_MatchingSchema * const parents = new ES_MatchingSchema[mu];
 	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMS.shuffle();
@@ -58,7 +58,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 
 			clock_t timeElapsed = clock() - start;
 			msElapsed = timeElapsed / CLOCKS_PER_MS;
-			std::cout << msElapsed << " " << best.costValue << "\n";
+//			std::cout << msElapsed << " " << best.costValue << "\n";
 		}
 	}
 
@@ -78,7 +78,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			ES_MatchingSchema child = parents[p];
 
 			//mutate child
-			child.swap2();
+			child.swap2(3);
 
 			//select the worst parent: is the first element of the heap
 			unsigned worstParentCostValue = parents[0].costValue;
@@ -104,17 +104,21 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 
 					clock_t timeElapsed = clock() - start;
 					msElapsed = timeElapsed / CLOCKS_PER_MS;
-					std::cout << msElapsed << " " << best.costValue << "\n";
+//					std::cout << msElapsed << " " << best.costValue << "\n";
 				}
 			}
 		}
 		generation++;
 	}
 
+	delete[] parents;
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " << best.costValue << "\n";
+//	std::cout << msElapsed << " " << best.costValue << "\n";
 
+//	m.print_matching_schema(best.sigma1,best.sigma2);
+
+	std::cout<<best.costValue;
 	return best.costValue;
 }
 

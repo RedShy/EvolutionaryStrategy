@@ -16,11 +16,18 @@
 /* Solvers */
 #include "HillClimbing.h"
 #include "BruteForce.h"
-#include "(mu+lambda)-ES_WP.h"
+#include "(mu+lambda)-ES_WP_RS.h"
 #include "(1+1)-ES.h"
 #include "(1+1)-ES_SRS.h"
 #include "(mu+lambda)-ES_AF.h"
+#include "(mu+lambda)-ES.h"
+#include "(mu+lambda)-ES-shuffle.h"
 #include "(1+1)-ES_RS.h"
+#include "(mu+1)-ES_WP.h"
+#include "random_search.h"
+#include "swap2-2.h"
+#include "swap2-3.h"
+#include "swap2-4.h"
 
 /* Definitions */
 #define endl '\n'
@@ -31,7 +38,8 @@ const unsigned short _ASCII_LEN = 255 - 0;
 const bool _DEBUG = false;
 const std::string _HC_ARG("hc");
 const std::string _BRUTEFORCE_ARG("ex");
-const std::string _ES_WP_ARG("es_wp");
+const std::string _ES_WP_ARG("es-wp");
+const std::string _ES_ARG("es");
 const std::string _ES_ONE_ONE_ARG("es_one_one");
 const std::string _ES_ONE_ONE_SRS_ARG("es_one_one_srs");
 const std::string _ES_AF_ARG("es_af");
@@ -191,17 +199,113 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 2000, 10, 20);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 14400, 10);
+		}
+		else if (heuristic == _ES_ARG)
+		{
+			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 129, 30, 111);
+		}
+		else if (heuristic == "es-shuffle")
+		{
+			distance = evolutionStrategy_shuffle(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 200, 40, 200);
+		}
+		else if (heuristic == "es-400-10-18")
+		{
+			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 400, 10, 18);
+		}
+		else if (heuristic == "es-85-10-85")
+		{
+			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 85, 10, 85);
+		}
+		else if (heuristic == "es-wp-rs")
+		{
+			distance = evolutionStrategy_WP_RS(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 57600, 20, 1);
+		}
+		else if (heuristic == "es-wp-S")
+		{
+			unsigned sum=0;
+			for(int i=0; i<1; i++)
+			{
+				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
+						sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10);
+			}
+			distance=sum/10;
+			std::cout<<distance;
+		}
+		else if (heuristic == "es-wp-M")
+		{
+			unsigned sum=0;
+			for(int i=0; i<1; i++)
+			{
+				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
+						sigma2i, sigma1l, sigma2l, p1, ms, e, 2500, 10);
+			}
+			distance=sum/10;
+			std::cout<<distance;
+		}
+		else if (heuristic == "es-wp-L")
+		{
+			unsigned sum=0;
+			for(int i=0; i<1; i++)
+			{
+				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
+						sigma2i, sigma1l, sigma2l, p1, ms, e, 1000, 10);
+			}
+			distance=sum/10;
+			std::cout<<distance;
+		}
+		else if (heuristic == "swap2-2")
+		{
+			distance = evolutionStrategy_WP_swap2_2(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
+			std::cout<<distance;
+		}
+		else if (heuristic == "swap2-3")
+		{
+			distance = evolutionStrategy_WP_swap2_3(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
+			std::cout<<distance;
+		}
+		else if (heuristic == "swap2-4")
+		{
+			distance = evolutionStrategy_WP_swap2_4(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
+
+		}
+		else if (heuristic == "es-wp-7200-10-1")
+		{
+			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 7200, 10);
+		}
+		else if (heuristic == "es-wp-30000")
+		{
+			distance = evolutionStrategy_WP_RS(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 30000, 10, 1);
+		}
+		else if (heuristic == "es-one-one")
+		{
+			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 7200, 0);
+		}
+		else if (heuristic == "es-one-one-srs")
+		{
+			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
+					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 1440, 10);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 0);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 7200, 0);
 		}
 		else if (heuristic == _ES_ONE_ONE_SRS_ARG)
 		{
 			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 5000, 10);
+					sigma1i, sigma2i, sigma1l, sigma2l, p1, ms, e, 1440, 5);
 		}
 		else if (heuristic == _ES_AF_ARG)
 		{
@@ -212,6 +316,11 @@ int main(int argc, char *argv[])
 		{
 			distance = evolutionStrategy_one_one_rs(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 5000);
+		}
+		else if (heuristic == "random")
+		{
+			distance = random_search(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 2000000);
 		}
 		clock_t timeElapsed = clock() - start;
 		clock_gettime(CLOCK_MONOTONIC, &finish1);
