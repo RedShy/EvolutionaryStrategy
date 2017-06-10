@@ -24,7 +24,8 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
 		const size_t& sig1l, const size_t& sig2l,
 
-		const size_t& p1, const size_t& p2, matching_schema<bool>& m, edit_distance& e,
+		const size_t& p1, const size_t& p2, matching_schema<bool>& m,
+		edit_distance& e,
 
 		const unsigned max_generations, const unsigned maxAttempts)
 {
@@ -50,8 +51,7 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 
 	clock_t timeElapsed1 = clock() - start;
 	msElapsed = timeElapsed1 / CLOCKS_PER_MS;
-	std::cout << msElapsed  << " " << best.costValue
-			<< "\n";
+	std::cout << msElapsed << " " << best.costValue << "\n";
 
 	unsigned attempts = 0;
 	while (attempts < maxAttempts)
@@ -83,8 +83,7 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 
 					clock_t timeElapsed = clock() - start;
 					msElapsed = timeElapsed / CLOCKS_PER_MS;
-					std::cout << msElapsed << " "
-							<< best.costValue << "\n";
+					std::cout << msElapsed << " " << best.costValue << "\n";
 				}
 			}
 
@@ -107,8 +106,7 @@ int evolutionStrategy_one_one_srs(const std::vector<unsigned>& s1,
 
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " << best.costValue
-			<< "\n";
+	std::cout << msElapsed << " " << best.costValue << "\n";
 
 //	std::cout<<best.costValue;
 	return best.costValue;

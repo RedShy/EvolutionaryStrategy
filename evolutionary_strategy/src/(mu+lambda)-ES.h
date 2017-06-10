@@ -133,7 +133,7 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
 	std::cout << msElapsed << " " << best.costValue << "\n";
 
-	m.print_matching_schema(best.sigma1,best.sigma2);
+//	m.print_matching_schema(best.sigma1,best.sigma2);
 
 //	std::cout<<best.costValue;
 //	std::cout<<"CHIAMATE A EDIT DISTANCE= "<<edit_distance::tentativi<<"\n";
