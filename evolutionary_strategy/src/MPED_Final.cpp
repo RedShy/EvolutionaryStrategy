@@ -28,6 +28,7 @@
 #include "swap2-2.h"
 #include "swap2-3.h"
 #include "swap2-4.h"
+#include "swap2-E.h"
 
 /* Definitions */
 #define endl '\n'
@@ -204,7 +205,7 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 129, 30, 111);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 10, 30, 111);
 		}
 		else if (heuristic == "es-shuffle")
 		{
@@ -275,6 +276,12 @@ int main(int argc, char *argv[])
 		{
 			distance = evolutionStrategy_WP_swap2_4(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
+
+		}
+		else if (heuristic == "swap2-E")
+		{
+			distance = evolutionStrategy_WP_swap2_E(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1, p2, ms, e, 14400, 10, 1);
 
 		}
 		else if (heuristic == "es-wp-7200-10-1")

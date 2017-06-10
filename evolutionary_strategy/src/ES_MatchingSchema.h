@@ -12,10 +12,32 @@
 
 struct ES_MatchingSchema
 {
+		unsigned* sigma1;
+		size_t sigma1l;
+
+		unsigned* sigma2;
+		size_t sigma2l;
+
+		unsigned costValue;
+
 		ES_MatchingSchema() :
 				costValue(std::numeric_limits<unsigned int>::max()), sigma1l(0), sigma2l(
 						0), sigma1(NULL), sigma2(NULL)
 		{
+
+		}
+
+		ES_MatchingSchema(const std::vector<unsigned>&_sigma_1,
+				const std::vector<unsigned>&_sigma_2) :
+				costValue(0), sigma1l(
+						_sigma_1.size()), sigma2l(_sigma_2.size())
+		{
+			sigma1 = new unsigned[_sigma_1.size()];
+			std::iota(sigma1, sigma1 + _sigma_1.size(), 0);
+
+			sigma2 = new unsigned[_sigma_2.size()];
+			std::iota(sigma2, sigma2 + _sigma_2.size(), 0);
+
 
 		}
 
@@ -64,6 +86,50 @@ struct ES_MatchingSchema
 			//second vector
 			i_1 = rand() % sigma2l;
 			i_2 = rand() % sigma2l;
+
+			temp = sigma2[i_1];
+			sigma2[i_1] = sigma2[i_2];
+			sigma2[i_2] = temp;
+
+//			std::cout << "SECOND VECTOR: i_1=" << i_1 << " i_2=" << i_2 << "\n";
+
+		}
+
+		void swap2_enhanced(const unsigned * const blocksig1, const unsigned * const blocksig2) const
+		{
+			//Perform a single, simple swap of two indices for every vector
+
+			//first vector
+			unsigned i_1 = rand() % sigma1l;
+			unsigned i_2 = rand() % sigma1l;
+
+			//if they are the same don't do anything. This for maintaining good mutator's properties
+			if(i_2 != i_1)
+			{
+				while(blocksig1[i_1] == blocksig1[i_2])
+				{
+					i_2 = rand() % sigma1l;
+				}
+			}
+
+			unsigned temp = sigma1[i_1];
+			sigma1[i_1] = sigma1[i_2];
+			sigma1[i_2] = temp;
+
+//			std::cout << "FIRST VECTOR: i_1=" << i_1 << " i_2=" << i_2 << "\n";
+
+			//second vector
+			i_1 = rand() % sigma2l;
+			i_2 = rand() % sigma2l;
+
+			//if they are the same don't do anything. This for maintaining good mutator's properties
+			if(i_2 != i_1)
+			{
+				while(blocksig2[i_1] == blocksig2[i_2])
+				{
+					i_2 = rand() % sigma2l;
+				}
+			}
 
 			temp = sigma2[i_1];
 			sigma2[i_1] = sigma2[i_2];
@@ -398,13 +464,7 @@ struct ES_MatchingSchema
 
 
 
-		unsigned* sigma1;
-		size_t sigma1l;
 
-		unsigned* sigma2;
-		size_t sigma2l;
-
-		unsigned costValue;
 };
 
 bool ES_isValid(ES_MatchingSchema m)

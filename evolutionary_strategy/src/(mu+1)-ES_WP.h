@@ -21,18 +21,39 @@
 
 #define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
+const unsigned * const initializeBlocksSwap2E(const std::vector<unsigned>& sig,
+		const size_t& p)
+{
+	unsigned * const blocksig = new unsigned[sig.size()];
+	unsigned marker = 0;
+	blocksig[0] = 0;
+	for (unsigned i = 1; i < sig.size(); ++i)
+	{
+		if (i % p == 0)
+		{
+			++marker;
+		}
+		blocksig[i] = marker;
+	}
+	return blocksig;
+}
+
 int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
 		const size_t& sig1l, const size_t& sig2l,
 
-		const size_t& p1, matching_schema<bool>& m, edit_distance& e,
+		const size_t& p1, const size_t& p2, matching_schema<bool>& m, edit_distance& e,
 
 		const unsigned max_generations, const unsigned mu)
 {
 	clock_t start = clock();
 	long double msElapsed = 0;
+
+	//Initialize stuff for the mutator swap2-E
+	const unsigned * const blocksig1 = initializeBlocksSwap2E(sig1, p1);
+	const unsigned * const blocksig2 = initializeBlocksSwap2E(sig2, p2);
 
 	ES_MatchingSchema startingMS(sig1, sig2);
 
@@ -74,7 +95,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			ES_MatchingSchema child = parents[p];
 
 			//mutate child
-			child.swap2();
+			child.swap2_enhanced(blocksig1, blocksig2);
 
 			//select the worst parent: is the first element of the heap
 			const unsigned worstParentCostValue = parents[0].costValue;
@@ -105,6 +126,9 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 			}
 		generation++;
 	}
+
+	delete[] blocksig1;
+	delete[] blocksig2;
 
 	delete[] parents;
 	clock_t timeElapsed = clock() - start;
