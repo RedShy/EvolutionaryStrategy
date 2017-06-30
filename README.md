@@ -2,13 +2,13 @@ This repository contains some implementations of Evolution Strategy for computin
 
 Usage is "mped $heuristic π_1 π_2" where $heuristic is the specific parameter for executing a particular heuristic. A list of parameters and their corresponding heuristic is listed below.
 
-| First Header  | Second Header |
+| Heuristic  | Parameter |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| (1+1)-ES  | "es-one-one"  |
+| (1+1)-ES Simple Random Restart  | "es-one-one-srs"  |
 
-(1+1)-ES 						           	"es-one-one"
-(1+1)-ES Simple Random Restart 	"es-one-one-srs"
+ 						           	
+ 	
 (μ+1)-ES 					            	"es-wp"
 (μ+λ)-ES 						            "es"
 (μ,λ)-ES 						            "es-comma"
