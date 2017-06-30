@@ -61,7 +61,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 
 			clock_t timeElapsed = clock() - start;
 			msElapsed = timeElapsed / CLOCKS_PER_MS;
-			std::cout << msElapsed << " " << best.costValue << "\n";
+//			std::cout << msElapsed << " " << best.costValue << "\n";
 		}
 	}
 
@@ -104,7 +104,7 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 
 					clock_t timeElapsed = clock() - start;
 					msElapsed = timeElapsed / CLOCKS_PER_MS;
-					std::cout << msElapsed << " " << best.costValue << "\n";
+//					std::cout << msElapsed << " " << best.costValue << "\n";
 				}
 			}
 		generation++;
@@ -116,11 +116,11 @@ int evolutionStrategy_WP(const std::vector<unsigned>& s1,
 	delete[] parents;
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " << best.costValue << "\n";
+//	std::cout << msElapsed << " " << best.costValue << "\n";
 
 //	m.print_matching_schema(best.sigma1,best.sigma2);
 
-//	std::cout<<best.costValue;
+	//std::cout<<best.costValue;
 	return best.costValue;
 }
 

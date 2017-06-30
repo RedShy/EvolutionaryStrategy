@@ -1,12 +1,12 @@
 /*
- * (mu+lambda)-ES.h
+ * (mu+lambda)-ES-comma.h
  *
- *  Created on: 05 giu 2017
- *      Author: HantolR
+ *  Created on: 20 giu 2017
+ *      Author: RedShy
  */
 
-#ifndef SRC__MU_LAMBDA__ES_H_
-#define SRC__MU_LAMBDA__ES_H_
+#ifndef SRC__MU_LAMBDA__ES_COMMA_H_
+#define SRC__MU_LAMBDA__ES_COMMA_H_
 
 #include <iostream>
 #include <vector>
@@ -21,7 +21,7 @@
 
 #define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
-int evolutionStrategy(const std::vector<unsigned>& s1,
+int evolutionStrategy_comma(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
 
 		const std::vector<unsigned>& sig1, const std::vector<unsigned>& sig2,
@@ -32,6 +32,12 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 		const unsigned max_generations, const unsigned mu,
 		const unsigned lambda)
 {
+	if(lambda < mu)
+	{
+		std::cout<<"lambda has to be greater than mu\n";
+		exit(1);
+	}
+
 	clock_t start = clock();
 	long double msElapsed = 0;
 
@@ -45,7 +51,7 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 	best.costValue = std::numeric_limits<unsigned int>::max();
 
 	//Generate mu random individuals
-	ES_MatchingSchema* const parents = new ES_MatchingSchema[mu + lambda];
+	ES_MatchingSchema* parents = new ES_MatchingSchema[mu];
 	for (unsigned i = 0; i < mu; ++i)
 	{
 		startingMS.shuffle();
@@ -66,27 +72,56 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 		}
 
 	}
+
 	const unsigned last = mu - 1;
+	const unsigned remainingChildren = lambda-mu;
 
 
-	//Select the worst parent in the pool
-	unsigned worstParentCostValue=parents[0].costValue;
-	for(unsigned i=1; i<mu; ++i)
-	{
-		if(parents[i].costValue > worstParentCostValue)
-		{
-			worstParentCostValue=parents[i].costValue;
-		}
-	}
-
+	ES_MatchingSchema* children = new ES_MatchingSchema[mu];
 	unsigned generation = 0;
 	while (generation <= max_generations)
 	{
-		unsigned childrenInPool = 0;
-
-		//Generate lambda children. Only mutation, no recombination
-		for (unsigned i = 0; i < lambda; i++)
+		for (unsigned i = 0; i < mu; i++)
 		{
+			//Choose random parent
+			const unsigned p = rand() % mu;
+
+			//Produce child, in the case parents=1 (like this) just clone
+			children[i] = parents[p];
+
+			//mutate child
+			children[i].swap2_enhanced(blocksig1, blocksig2);
+
+			children[i].costValue =
+					e.edit_distance_matching_schema_enhanced(s1,
+							s2, s1l, s2l, children[i].sigma1, children[i].sigma2, sig1l,
+							sig2l, m);
+
+			if (children[i].costValue < best.costValue)
+			{
+				best = children[i];
+
+				clock_t timeElapsed = clock() - start;
+				msElapsed = timeElapsed / CLOCKS_PER_MS;
+				std::cout << msElapsed << " " << best.costValue << "\n";
+			}
+		}
+
+		//Generate the remaining children. Only mutation, no recombination
+		for (unsigned i = 0; i < remainingChildren; i++)
+		{
+			//select the worst child
+			unsigned worstChild=0;
+			unsigned worstChildCostValue=children[0].costValue;
+			for(unsigned i=1; i<mu; ++i)
+			{
+				if(children[i].costValue > worstChildCostValue)
+				{
+					worstChildCostValue=children[i].costValue;
+					worstChild=i;
+				}
+			}
+
 			//Choose random parent
 			const unsigned p = rand() % mu;
 
@@ -99,16 +134,15 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 			const int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
-							sig2l, m, worstParentCostValue);
+							sig2l, m, worstChildCostValue);
 
 			if (newDistance != -1)
 			{
-				//The child is better than the worst parent,
+				//The child is better than the worst child,
 				child.costValue = newDistance;
 
-				//so he is added to the pool
-				parents[mu + childrenInPool] = child;
-				childrenInPool++;
+				//so he replace the worst child
+				children[worstChild] = child;
 
 				if (child.costValue < best.costValue)
 				{
@@ -121,13 +155,9 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 			}
 		}
 
-		//sorting for selecting the best mu individuals and at the same time get the worst parent
-		std::sort(parents, parents+mu+childrenInPool);
-
-		worstParentCostValue = parents[last].costValue;
-
-		//Make a random_shuffle for keeping high entropy
-		std::random_shuffle(parents,parents+mu);
+		ES_MatchingSchema* tmp=children;
+		children=parents;
+		parents=tmp;
 
 		generation++;
 	}
@@ -136,6 +166,7 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 	delete[] blocksig2;
 
 	delete[] parents;
+	delete[] children;
 
 	clock_t timeElapsed = clock() - start;
 	msElapsed = timeElapsed / CLOCKS_PER_MS;
@@ -149,4 +180,5 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 }
 
 
-#endif /* SRC__MU_LAMBDA__ES_H_ */
+
+#endif /* SRC__MU_LAMBDA__ES_COMMA_H_ */

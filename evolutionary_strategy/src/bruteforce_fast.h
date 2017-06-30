@@ -1,12 +1,13 @@
 /*
- * BruteForce.h
+ * bruteforce_fast.h
  *
- *  Created on: 05 apr 2017
- *      Author: HantolR
+ *  Created on: 15 giu 2017
+ *      Author: RedShy
  */
 
-#ifndef SRC_BRUTEFORCE_H_
-#define SRC_BRUTEFORCE_H_
+#ifndef SRC_BRUTEFORCE_FAST_H_
+#define SRC_BRUTEFORCE_FAST_H_
+
 #include <iostream>
 #include <map>
 #include <numeric>
@@ -18,10 +19,10 @@
 
 #define CLOCKS_PER_MS (CLOCKS_PER_SEC / 1000)
 
-int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
+int bruteforce_fast(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 		const size_t& s1l, const size_t& s2l, const std::vector<unsigned>& sig1,
 		const std::vector<unsigned>& sig2, const size_t& sig1l,
-		const size_t& sig2l, const matching_schema<bool>& m, edit_distance& e)
+		const size_t& sig2l, const matching_schema<bool>& m, edit_distance& e, const unsigned startingDistance)
 {
 
 	clock_t start = clock();
@@ -47,27 +48,20 @@ int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 
 	}
 
+	distance=startingDistance;
 	std::map<int,int> editDistances=std::map<int,int>();
 	do
 	{
 //		do
 //		{
-			current = e.edit_distance_matching_schema_enhanced(s1, s2,
-					s1l, s2l, perm1, perm2, sig1l, sig2l, m);
+			current = e.edit_distance_matching_schema_enhanced_with_diagonal(s1, s2,
+					s1l, s2l, perm1, perm2, sig1l, sig2l, m, distance);
 
-//			if(current!=-1)
-//			{
-//				distance = current;
-//			}
-
-
-
-			if(current < distance)
+			if(current!=-1)
 			{
-				distance=current;
+				distance = current;
+				editDistances[current]++;
 			}
-
-			editDistances[current]++;
 
 			computed++;
 
@@ -100,4 +94,4 @@ int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 
 
 
-#endif /* SRC_BRUTEFORCE_H_ */
+#endif /* SRC_BRUTEFORCE_FAST_H_ */

@@ -16,11 +16,13 @@
 /* Solvers */
 #include "HillClimbing.h"
 #include "BruteForce.h"
+#include "bruteforce_fast.h"
 #include "(mu+lambda)-ES_WP_RS.h"
 #include "(1+1)-ES.h"
 #include "(1+1)-ES_SRS.h"
 #include "(mu+lambda)-ES_AF.h"
 #include "(mu+lambda)-ES.h"
+#include "(mu+lambda)-ES-comma.h"
 #include "(mu+lambda)-ES-shuffle.h"
 #include "(1+1)-ES_RS.h"
 #include "(mu+1)-ES_WP.h"
@@ -41,11 +43,12 @@ const std::string _HC_ARG("hc");
 const std::string _BRUTEFORCE_ARG("ex");
 const std::string _ES_WP_ARG("es-wp");
 const std::string _ES_ARG("es");
-const std::string _ES_ONE_ONE_ARG("es_one_one");
-const std::string _ES_ONE_ONE_SRS_ARG("es_one_one_srs");
-const std::string _ES_AF_ARG("es_af");
-const std::string _ES_ONE_ONE_SA_ARG("es_one_one_sa");
-const std::string _ES_ONE_ONE_RS_ARG("es_one_one_rs");
+const std::string _ES_ONE_ONE_ARG("es-one-one");
+const std::string _ES_ONE_ONE_SRS_ARG("es-one-one-srs");
+const std::string _ES_AF_ARG("es-af");
+const std::string _ES_ONE_ONE_SA_ARG("es-one-one-sa");
+const std::string _ES_ONE_ONE_RS_ARG("es-one-one-rs");
+const std::string _ES_COMMA_ARG("es-comma");
 const std::string _SPECIFIC_PMS("specific-permutations");
 const std::string _SPECIFIC_MMS("specific-matrix");
 
@@ -185,12 +188,19 @@ int main(int argc, char *argv[])
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 		{
-		clock_gettime(CLOCK_MONOTONIC, &start1);
+		//clock_gettime(CLOCK_MONOTONIC, &start1);
 		clock_t start = clock();
 		if (heuristic == _BRUTEFORCE_ARG)
 		{
 			distance = bruteforce(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
 					sigma2l, ms, e);
+		}
+		if (heuristic == "exf")
+		{
+			unsigned distance=0;
+			std::cin>>distance;
+			distance = bruteforce_fast(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
+					sigma2l, ms, e, distance);
 		}
 		else if (heuristic == _HC_ARG)
 		{
@@ -200,114 +210,22 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_WP_ARG)
 		{
 			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 14400, 10);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 3600, 10);
 		}
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 129, 30, 111);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
 		}
-		else if (heuristic == "es-shuffle")
+		else if (heuristic == _ES_COMMA_ARG)
 		{
-			distance = evolutionStrategy_shuffle(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 200, 40, 200);
-		}
-		else if (heuristic == "es-400-10-18")
-		{
-			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, p2, ms, e, 400, 10, 18);
-		}
-		else if (heuristic == "es-85-10-85")
-		{
-			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 85, 10, 85);
-		}
-		else if (heuristic == "es-wp-rs")
-		{
-			distance = evolutionStrategy_WP_RS(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 57600, 20, 1);
-		}
-		else if (heuristic == "es-wp-S")
-		{
-			unsigned sum=0;
-			for(int i=0; i<1; i++)
-			{
-				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-						sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 5000, 10);
-			}
-			distance=sum/10;
-			std::cout<<distance;
-		}
-		else if (heuristic == "es-wp-M")
-		{
-			unsigned sum=0;
-			for(int i=0; i<1; i++)
-			{
-				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-						sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 2500, 10);
-			}
-			distance=sum/10;
-			std::cout<<distance;
-		}
-		else if (heuristic == "es-wp-L")
-		{
-			unsigned sum=0;
-			for(int i=0; i<1; i++)
-			{
-				sum += evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-						sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 1000, 10);
-			}
-			distance=sum/10;
-			std::cout<<distance;
-		}
-		else if (heuristic == "swap2-2")
-		{
-			distance = evolutionStrategy_WP_swap2_2(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-			std::cout<<distance;
-		}
-		else if (heuristic == "swap2-3")
-		{
-			distance = evolutionStrategy_WP_swap2_3(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-			std::cout<<distance;
-		}
-		else if (heuristic == "swap2-4")
-		{
-			distance = evolutionStrategy_WP_swap2_4(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 50, 5, 72);
-
-		}
-		else if (heuristic == "swap2-E")
-		{
-			distance = evolutionStrategy_WP_swap2_E(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, p2, ms, e, 14400, 10, 1);
-
-		}
-		else if (heuristic == "es-wp-7200-10-1")
-		{
-			distance = evolutionStrategy_WP(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 7200, 10);
-		}
-		else if (heuristic == "es-wp-30000")
-		{
-			distance = evolutionStrategy_WP_RS(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 30000, 10, 1);
-		}
-		else if (heuristic == "es-one-one")
-		{
-			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 7200, 0);
-		}
-		else if (heuristic == "es-one-one-srs")
-		{
-			distance = evolutionStrategy_one_one_srs(s1i, s2i, s1l, s2l,
-					sigma1i, sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 1440, 10);
+			distance = evolutionStrategy_comma(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 30, 30, 120);
 		}
 		else if (heuristic == _ES_ONE_ONE_ARG)
 		{
 			distance = evolutionStrategy_one_one(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 7200, 0);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 3600, 0);
 		}
 		else if (heuristic == _ES_ONE_ONE_SRS_ARG)
 		{
@@ -327,10 +245,10 @@ int main(int argc, char *argv[])
 		else if (heuristic == "random")
 		{
 			distance = random_search(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1, ms, e, 2000000);
+					sigma2i, sigma1l, sigma2l, p1, ms, e, 14400);
 		}
 		clock_t timeElapsed = clock() - start;
-		clock_gettime(CLOCK_MONOTONIC, &finish1);
+		//clock_gettime(CLOCK_MONOTONIC, &finish1);
 		msElapsed = timeElapsed / CLOCKS_PER_MS;
 
 		elapsed = (finish1.tv_sec - start1.tv_sec);

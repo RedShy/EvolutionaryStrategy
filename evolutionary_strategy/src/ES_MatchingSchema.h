@@ -391,7 +391,6 @@ struct ES_MatchingSchema
 		{
 			costValue = m.costValue;
 
-			//TODO: we can assume that every child has the same simgas length
 			if (sigma1l != m.sigma1l)
 			{
 				sigma1l = m.sigma1l;
@@ -465,10 +464,6 @@ struct ES_MatchingSchema
 			}
 			std::cout << std::endl;
 		}
-
-
-
-
 };
 
 bool ES_isValid(ES_MatchingSchema m)
