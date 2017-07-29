@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
 		}
 		if (heuristic == "exf")
 		{
-			unsigned distance=0;
+			unsigned distance = 0;
 			std::cin>>distance;
 			distance = bruteforce_fast(s1i, s2i, s1l, s2l, sigma1i, sigma2i, sigma1l,
 					sigma2l, ms, e, distance);
