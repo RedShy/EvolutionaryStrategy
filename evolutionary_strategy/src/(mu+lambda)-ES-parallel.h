@@ -149,12 +149,6 @@ void evolutionStrategy_t(const std::vector<unsigned>& s1,
 		const unsigned max_children, ES_MatchingSchema* const parents, const unsigned * const blocksig1, const unsigned * const blocksig2,
 		const unsigned worstParentCostValue, const unsigned mu, const unsigned offSetInPool)
 {
-	//clean the piece of the genetic pool before store the children
-	for(unsigned i=0; i<max_children; ++i)
-	{
-		parents[offSetInPool+i].costValue=std::numeric_limits<unsigned int>::max();
-	}
-
 	unsigned addedChildren=0;
 	for (unsigned i = 0; i < max_children; i++)
 	{
