@@ -218,11 +218,6 @@ int main(int argc, char *argv[])
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
 		}
-		else if (heuristic == "es-tmp")
-		{
-			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
-		}
 		else if (heuristic == "es-p")
 		{
 			distance = evolutionStrategy_p(s1i, s2i, s1l, s2l, sigma1i,
