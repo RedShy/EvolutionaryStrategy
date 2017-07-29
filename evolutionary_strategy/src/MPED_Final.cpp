@@ -22,6 +22,7 @@
 #include "(1+1)-ES_SRS.h"
 #include "(mu+lambda)-ES_AF.h"
 #include "(mu+lambda)-ES.h"
+#include "(mu+lambda)-ES-parallel.h"
 #include "(mu+lambda)-ES-comma.h"
 #include "(mu+lambda)-ES-shuffle.h"
 #include "(1+1)-ES_RS.h"
@@ -188,7 +189,7 @@ int main(int argc, char *argv[])
 	// Common execution of HC or EX
 	if (!specific_perm && !specific_matrix)
 		{
-		//clock_gettime(CLOCK_MONOTONIC, &start1);
+		clock_gettime(CLOCK_MONOTONIC, &start1);
 		clock_t start = clock();
 		if (heuristic == _BRUTEFORCE_ARG)
 		{
@@ -215,6 +216,16 @@ int main(int argc, char *argv[])
 		else if (heuristic == _ES_ARG)
 		{
 			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
+		}
+		else if (heuristic == "es-tmp")
+		{
+			distance = evolutionStrategy(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
+		}
+		else if (heuristic == "es-p")
+		{
+			distance = evolutionStrategy_p(s1i, s2i, s1l, s2l, sigma1i,
 					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
 		}
 		else if (heuristic == _ES_COMMA_ARG)
@@ -248,7 +259,7 @@ int main(int argc, char *argv[])
 					sigma2i, sigma1l, sigma2l, p1, ms, e, 14400);
 		}
 		clock_t timeElapsed = clock() - start;
-		//clock_gettime(CLOCK_MONOTONIC, &finish1);
+		clock_gettime(CLOCK_MONOTONIC, &finish1);
 		msElapsed = timeElapsed / CLOCKS_PER_MS;
 
 		elapsed = (finish1.tv_sec - start1.tv_sec);
@@ -313,14 +324,15 @@ int main(int argc, char *argv[])
 	}
 
 //	std::cout << distance;
-//	if (heuristic == _ES_ONE_ONE_BSRS_ARG || heuristic == _ES_BWP_ARG)
-//	{
-//		std::cout << ' ' << (int) (elapsed * 1000) << endl;
-//	}
-//	else
-//	{
-//	std::cout << ' ' << msElapsed << endl;
-//	}
+	if (heuristic == "es-p")
+	{
+		std::cout << ' ' << (int) (elapsed * 1000) << endl;
+	}
+	else
+	{
+		std::cout << ' ' << msElapsed << endl;
+	}
+//	std::cout <<' ' << (int) (elapsed * 1000) << endl;
 
 	return 0;
 }
