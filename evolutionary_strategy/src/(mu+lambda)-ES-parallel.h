@@ -152,7 +152,7 @@ void evolutionStrategy_t(const std::vector<unsigned>& s1,
 	//clean the piece of the genetic pool before store the children
 	for(unsigned i=0; i<max_children; ++i)
 	{
-		parents[offSetInPool+max_children].costValue=std::numeric_limits<unsigned int>::max();
+		parents[offSetInPool+i].costValue=std::numeric_limits<unsigned int>::max();
 	}
 
 	unsigned addedChildren=0;
