@@ -52,9 +52,6 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 	{
 		startingMS.shuffle();
 
-		//validate matching schema
-		if (ES_isValid(startingMS))
-		{
 			startingMS.costValue = e.edit_distance_matching_schema_enhanced(s1,
 					s2, s1l, s2l, startingMS.sigma1, startingMS.sigma2, sig1l,
 					sig2l, m);
@@ -69,13 +66,6 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 				std::cout << msElapsed << " "<<generation<<" " << best.costValue << "\n";
 			}
 
-		}
-		else
-		{
-			//TODO: not valid, maybe mutate until is valid?
-			//repeat iteration
-			i--;
-		}
 	}
 
 	while (generation <= max_generations)
@@ -92,9 +82,6 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 			//mutate child
 			child.swap2();
 
-			//validate child
-			if (ES_isValid(child))
-			{
 				//Every child compete with his own father
 				int newDistance =
 						e.edit_distance_matching_schema_enhanced_with_diagonal(
@@ -118,14 +105,6 @@ int evolutionStrategy_AF(const std::vector<unsigned>& s1,
 					}
 
 				}
-//				else child discarded
-			}
-			else
-			{
-				//TODO: not valid, maybe mutate until is valid?
-				//repeat iteration
-				i--;
-			}
 		}
 		generation++;
 	}

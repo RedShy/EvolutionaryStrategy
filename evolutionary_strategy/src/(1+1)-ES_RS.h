@@ -62,8 +62,6 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 		//mutate child
 		child.swap2();
 
-		if (ES_isValid(child))
-		{
 			int newDistance =
 					e.edit_distance_matching_schema_enhanced_with_diagonal(s1,
 							s2, s1l, s2l, child.sigma1, child.sigma2, sig1l,
@@ -111,11 +109,6 @@ int evolutionStrategy_one_one_rs(const std::vector<unsigned>& s1,
 					}
 				}
 			}
-		}
-		else
-		{
-			continue;
-		}
 
 		generation++;
 
