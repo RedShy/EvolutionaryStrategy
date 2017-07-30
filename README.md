@@ -8,7 +8,8 @@ Usage is "mped $heuristic π_1 π_2" where $heuristic is the specific parameter 
 | (1+1)-ES Simple Random Restart  | "es-one-one-srs"  |
 | (μ+1)-ES   | "es-wp"  |
 | (μ+λ)-ES 		  | "es"  |
-| (μ+λ)-ES Parallel		  | "es-p"  |
+| (μ+λ)-ES Parallel Threads		  | "es-p"  |
+| (μ+λ)-ES Parallel OpenMP		  | "es-omp"  |
 | (μ,λ)-ES 	  | "es-comma"  |
 | Bruteforce 	  | "ex"  |
 | Fast Bruteforce 	  | "exf"  |
