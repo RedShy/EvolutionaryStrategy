@@ -466,11 +466,5 @@ struct ES_MatchingSchema
 		}
 };
 
-bool ES_isValid(ES_MatchingSchema m)
-{
-	//TODO validate a matching schema
-	return true;
-}
-
 
 #endif /* SRC_ES_MATCHINGSCHEMA_H_ */
