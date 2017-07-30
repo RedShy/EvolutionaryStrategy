@@ -32,8 +32,8 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 		const unsigned max_generations, const unsigned mu,
 		const unsigned lambda)
 {
-	clock_t start = clock();
-	long double msElapsed = 0;
+//	clock_t start = clock();
+//	long double msElapsed = 0;
 
 	//Initialize stuff for the mutator swap2-E
 	const unsigned * const blocksig1 = initializeBlocksSwap2E(sig1, p1);
@@ -56,14 +56,14 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 
 		parents[i] = startingMS;
 
-		if (parents[i].costValue < best.costValue)
-		{
-			best = parents[i];
-
-			clock_t timeElapsed = clock() - start;
-			msElapsed = timeElapsed / CLOCKS_PER_MS;
-			std::cout << msElapsed << " " << best.costValue << "\n";
-		}
+//		if (parents[i].costValue < best.costValue)
+//		{
+//			best = parents[i];
+//
+//			clock_t timeElapsed = clock() - start;
+//			msElapsed = timeElapsed / CLOCKS_PER_MS;
+//			std::cout << msElapsed << " " << best.costValue << "\n";
+//		}
 
 	}
 	const unsigned last = mu - 1;
@@ -110,14 +110,14 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 				parents[mu + childrenInPool] = child;
 				childrenInPool++;
 
-				if (child.costValue < best.costValue)
-				{
-					best = child;
-
-					clock_t timeElapsed = clock() - start;
-					msElapsed = timeElapsed / CLOCKS_PER_MS;
-					std::cout << msElapsed << " " << best.costValue << "\n";
-				}
+//				if (child.costValue < best.costValue)
+//				{
+//					best = child;
+//
+//					clock_t timeElapsed = clock() - start;
+//					msElapsed = timeElapsed / CLOCKS_PER_MS;
+//					std::cout << msElapsed << " " << best.costValue << "\n";
+//				}
 			}
 		}
 
@@ -132,19 +132,23 @@ int evolutionStrategy(const std::vector<unsigned>& s1,
 		generation++;
 	}
 
+	std::sort(parents, parents+mu+lambda);
+	best=parents[0];
+	std::cout<<best.costValue;
 	delete[] blocksig1;
 	delete[] blocksig2;
 
 	delete[] parents;
 
-	clock_t timeElapsed = clock() - start;
-	msElapsed = timeElapsed / CLOCKS_PER_MS;
-	std::cout << msElapsed << " " << best.costValue << "\n";
+//	clock_t timeElapsed = clock() - start;
+//	msElapsed = timeElapsed / CLOCKS_PER_MS;
+//	std::cout << msElapsed << " " << best.costValue << "\n";
 
 //	m.print_matching_schema(best.sigma1,best.sigma2);
 
 //	std::cout<<best.costValue;
 //	std::cout<<"CHIAMATE A EDIT DISTANCE= "<<edit_distance::tentativi<<"\n";
+
 	return best.costValue;
 }
 

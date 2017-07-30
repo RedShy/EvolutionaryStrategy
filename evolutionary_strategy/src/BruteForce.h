@@ -61,7 +61,6 @@ int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 //			}
 
 
-
 			if(current < distance)
 			{
 				distance=current;
@@ -79,9 +78,9 @@ int bruteforce(const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 				std::cout << " Computing permutation number " << computed << " on "<<totalPermutations <<" total. Edit Distance: "<<distance<<" Time: "<<msElapsed<< "\n";
 			}
 
-//		} while (std::next_permutation(perm2, perm2 + sig2l));
+		} while (std::next_permutation(perm2, perm2 + sig2l));
 
-	} while (std::next_permutation(perm1, perm1 + sig1l));
+//	} while (std::next_permutation(perm1, perm1 + sig1l));
 
 	std::cout<<"RESULTS:"<<std::endl;
 
