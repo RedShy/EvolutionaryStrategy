@@ -22,11 +22,12 @@
 #include "(1+1)-ES_SRS.h"
 #include "(mu+lambda)-ES_AF.h"
 #include "(mu+lambda)-ES.h"
-#include "(mu+lambda)-ES-parallel.h"
-#include "(mu+lambda)-ES-comma.h"
 #include "(mu+lambda)-ES-shuffle.h"
 #include "(1+1)-ES_RS.h"
+#include "(mu , lambda)-ES.h"
 #include "(mu+1)-ES_WP.h"
+#include "(mu+lambda)-ES-threads.h"
+#include "(mu+lambda)-ES-OpenMP.h"
 #include "random_search.h"
 #include "swap2-2.h"
 #include "swap2-3.h"
@@ -221,7 +222,12 @@ int main(int argc, char *argv[])
 		else if (heuristic == "es-p")
 		{
 			distance = evolutionStrategy_p(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 30, 30, 120);
+		}
+		else if (heuristic == "es-omp")
+		{
+			distance = evolutionStrategy_omp(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 30, 30, 120);
 		}
 		else if (heuristic == _ES_COMMA_ARG)
 		{
@@ -319,7 +325,7 @@ int main(int argc, char *argv[])
 	}
 
 //	std::cout << distance;
-	if (heuristic == "es-p")
+	if (heuristic == "es-p" || heuristic == "es-omp")
 	{
 		std::cout << ' ' << (int) (elapsed * 1000) << endl;
 	}
