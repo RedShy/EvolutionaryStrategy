@@ -28,7 +28,7 @@ void computeChildren(const unsigned lambda, const unsigned mu,
 		const size_t& s1l, const size_t& s2l, const size_t& sig1l,
 		const size_t& sig2l, const unsigned worstParentCostValue,
 		ES_MatchingSchema* const parents, edit_distance& e,
-		matching_schema<bool>& m, unsigned& childrenInPool);
+		matching_schema<bool>& m, const unsigned offSetInPoolThread);
 
 int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
@@ -87,15 +87,17 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 	{
 		unsigned childrenInPool=0;
 
+
 		#pragma omp parallel num_threads(numberOfThreads)
 		{
 			computeChildren(lambda/numberOfThreads, mu, blocksig1,
 					blocksig2, s1, s2, s1l, s2l, sig1l, sig2l, worstParentCostValue,
-					parents, e, m, childrenInPool);
+					parents, e, m, (lambda/numberOfThreads)*omp_get_thread_num());
+
 		}
 
 		//sorting for selecting the best mu individuals and at the same time get the worst parent
-		std::sort(parents, parents+mu+childrenInPool);
+		std::sort(parents, parents+mu+lambda);
 
 		worstParentCostValue = parents[last].costValue;
 
@@ -124,8 +126,9 @@ void computeChildren(const unsigned lambda, const unsigned mu,
 		const size_t& s1l, const size_t& s2l, const size_t& sig1l,
 		const size_t& sig2l, const unsigned worstParentCostValue,
 		ES_MatchingSchema* const parents, edit_distance& e,
-		matching_schema<bool>& m, unsigned& childrenInPool)
+		matching_schema<bool>& m, const unsigned offSetInPoolThread)
 {
+	unsigned childrenInPool=0;
 	//Generate lambda children. Only mutation, no recombination
 	for (unsigned i = 0; i < lambda; i++)
 	{
@@ -144,11 +147,9 @@ void computeChildren(const unsigned lambda, const unsigned mu,
 			//The child is better than the worst parent,
 			child.costValue = newDistance;
 			//so he is added to the pool
-			#pragma	omp critical
-			{
-				parents[mu + childrenInPool] = child;
-				childrenInPool++;
-			}
+
+			parents[mu + offSetInPoolThread + childrenInPool] = child;
+			childrenInPool++;
 		}
 	}
 }
