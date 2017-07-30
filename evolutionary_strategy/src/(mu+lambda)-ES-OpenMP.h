@@ -87,7 +87,6 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 	{
 		unsigned childrenInPool=0;
 
-
 		#pragma omp parallel num_threads(numberOfThreads)
 		{
 			computeChildren(lambda/numberOfThreads, mu, blocksig1,
