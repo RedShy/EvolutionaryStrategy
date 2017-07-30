@@ -5,8 +5,8 @@
  *      Author: RedShy
  */
 
-#ifndef SRC__MU_LAMBDA__ES_COMMA_H_
-#define SRC__MU_LAMBDA__ES_COMMA_H_
+#ifndef SRC__MU___LAMBDA__ES_H_
+#define SRC__MU___LAMBDA__ES_H_
 
 #include <iostream>
 #include <vector>
@@ -73,7 +73,6 @@ int evolutionStrategy_comma(const std::vector<unsigned>& s1,
 
 	}
 
-	const unsigned last = mu - 1;
 	const unsigned remainingChildren = lambda-mu;
 
 
@@ -181,4 +180,4 @@ int evolutionStrategy_comma(const std::vector<unsigned>& s1,
 
 
 
-#endif /* SRC__MU_LAMBDA__ES_COMMA_H_ */
+#endif /* SRC__MU___LAMBDA__ES_H_ */
