@@ -88,9 +88,11 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 		unsigned childrenInPool=0;
 
 		#pragma omp parallel num_threads(numberOfThreads)
-		computeChildren(lambda/numberOfThreads, mu, blocksig1,
-				blocksig2, s1, s2, s1l, s2l, sig1l, sig2l, worstParentCostValue,
-				parents, e, m, childrenInPool);
+		{
+			computeChildren(lambda/numberOfThreads, mu, blocksig1,
+					blocksig2, s1, s2, s1l, s2l, sig1l, sig2l, worstParentCostValue,
+					parents, e, m, childrenInPool);
+		}
 
 		//sorting for selecting the best mu individuals and at the same time get the worst parent
 		std::sort(parents, parents+mu+childrenInPool);
