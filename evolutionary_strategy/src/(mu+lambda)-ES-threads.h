@@ -5,8 +5,8 @@
  *      Author: RedShy
  */
 
-#ifndef SRC__MU_LAMBDA__ES_PARALLEL_H_
-#define SRC__MU_LAMBDA__ES_PARALLEL_H_
+#ifndef SRC__MU_LAMBDA__ES_THREADS_H_
+#define SRC__MU_LAMBDA__ES_THREADS_H_
 
 #include <iostream>
 #include <vector>
@@ -15,6 +15,7 @@
 #include <ctime>
 #include <limits>
 #include <queue>
+#include <thread>
 #include "ES_MatchingSchema.h"
 #include "EditDistance.h"
 #include "MatchingSchema.h"
@@ -82,7 +83,7 @@ int evolutionStrategy_p(const std::vector<unsigned>& s1,
 
 	//max hardware cores
 //	const unsigned numberOfThreads=std::thread::hardware_concurrency;
-	const unsigned numberOfThreads=3;
+	const unsigned numberOfThreads=4;
 
 	//array of handlers of threads for joining them
 	std::thread** threads=new std::thread*[numberOfThreads];
@@ -181,4 +182,4 @@ void evolutionStrategy_t(const std::vector<unsigned>& s1,
 }
 
 
-#endif /* SRC__MU_LAMBDA__ES_PARALLEL_H_ */
+#endif /* SRC__MU_LAMBDA__ES_THREADS_H_ */
