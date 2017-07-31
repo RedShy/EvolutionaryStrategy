@@ -222,12 +222,32 @@ int main(int argc, char *argv[])
 		else if (heuristic == "es-p")
 		{
 			distance = evolutionStrategy_p(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 30, 30, 120);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120, 3);
+		}
+		else if (heuristic == "es-p-2")
+		{
+			distance = evolutionStrategy_p(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120, 2);
+		}
+		else if (heuristic == "es-p-4")
+		{
+			distance = evolutionStrategy_p(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120, 4);
 		}
 		else if (heuristic == "es-omp")
 		{
 			distance = evolutionStrategy_omp(s1i, s2i, s1l, s2l, sigma1i,
-					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 30, 30, 120);
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120,3);
+		}
+		else if (heuristic == "es-omp-2")
+		{
+			distance = evolutionStrategy_omp(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120,2);
+		}
+		else if (heuristic == "es-omp-4")
+		{
+			distance = evolutionStrategy_omp(s1i, s2i, s1l, s2l, sigma1i,
+					sigma2i, sigma1l, sigma2l, p1,p2, ms, e, 120, 30, 120,4);
 		}
 		else if (heuristic == _ES_COMMA_ARG)
 		{
@@ -325,15 +345,15 @@ int main(int argc, char *argv[])
 	}
 
 //	std::cout << distance;
-	if (heuristic == "es-p" || heuristic == "es-omp")
-	{
-		std::cout << ' ' << (int) (elapsed * 1000) << endl;
-	}
-	else
-	{
-		std::cout << ' ' << msElapsed << endl;
-	}
-//	std::cout <<' ' << (int) (elapsed * 1000) << endl;
+//	if (heuristic == "es-p" || heuristic == "es-omp")
+//	{
+//		std::cout << ' ' << (int) (elapsed * 1000) << endl;
+//	}
+//	else
+//	{
+//		std::cout << ' ' << msElapsed << endl;
+//	}
+	std::cout <<' ' << (int) (elapsed * 1000) << endl;
 
 	return 0;
 }

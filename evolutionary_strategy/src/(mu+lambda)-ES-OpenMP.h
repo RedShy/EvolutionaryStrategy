@@ -39,13 +39,15 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 		const size_t& p1, const size_t& p2, matching_schema<bool>& m, edit_distance& e,
 
 		const unsigned max_generations, const unsigned mu,
-		const unsigned lambda)
+		const unsigned lambda, unsigned numberOfThreads)
 {
 //	clock_t start = clock();
 //	long double msElapsed = 0;
 
-//	const unsigned numberOfThreads=std::thread::hardware_concurrency;
-	const unsigned numberOfThreads=3;
+	if(numberOfThreads==0)
+	{
+		numberOfThreads=std::thread::hardware_concurrency();
+	}
 
 	//Initialize stuff for the mutator swap2-E
 	const unsigned * const blocksig1 = initializeBlocksSwap2E(sig1, p1);

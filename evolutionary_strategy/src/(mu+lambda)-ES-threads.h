@@ -41,7 +41,7 @@ int evolutionStrategy_p(const std::vector<unsigned>& s1,
 		const size_t& p1, const size_t& p2, matching_schema<bool>& m, edit_distance& e,
 
 		const unsigned max_generations, const unsigned mu,
-		const unsigned lambda)
+		const unsigned lambda, unsigned numberOfThreads)
 {
 
 	clock_t start = clock();
@@ -82,8 +82,10 @@ int evolutionStrategy_p(const std::vector<unsigned>& s1,
 	}
 
 	//max hardware cores
-//	const unsigned numberOfThreads=std::thread::hardware_concurrency;
-	const unsigned numberOfThreads=4;
+	if(numberOfThreads==0)
+	{
+		numberOfThreads=std::thread::hardware_concurrency();
+	}
 
 	//array of handlers of threads for joining them
 	std::thread** threads=new std::thread*[numberOfThreads];
@@ -150,6 +152,7 @@ void evolutionStrategy_t(const std::vector<unsigned>& s1,
 		const unsigned max_children, ES_MatchingSchema* const parents, const unsigned * const blocksig1, const unsigned * const blocksig2,
 		const unsigned worstParentCostValue, const unsigned mu, const unsigned offSetInPool)
 {
+
 	unsigned addedChildren=0;
 	for (unsigned i = 0; i < max_children; i++)
 	{
