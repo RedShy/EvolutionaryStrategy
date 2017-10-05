@@ -10,7 +10,6 @@
 #include <unordered_map>
 //#include <tr1/unordered_map>
 
-		static unsigned tentativi=0;
 
 //Ho utilizzato pair_hash perchè unordered map non riusciva a definire l'hash per una key con pair<int,int>
 struct pair_hash
@@ -296,7 +295,6 @@ struct edit_distance
 // tale funzione permette di calcolare la distanza se risulta essere inferiore al threshold
 // riducendo il tempo di esecuzione a O(k*m), calcolando solo una striscia di diagonali 2k+1.
 //
-		static unsigned tentativi;
 		int edit_distance_matching_schema_enhanced_with_diagonal(
 				const std::vector<unsigned>& s1,
 				const std::vector<unsigned>& s2, int s1l, int s2l,
@@ -305,7 +303,6 @@ struct edit_distance
 				int threshold)
 		{
 
-			tentativi++;
 
 			int MAX = std::numeric_limits<int>::max();
 
@@ -622,5 +619,4 @@ struct edit_distance
 		}
 
 };
-unsigned edit_distance::tentativi=0;
 #endif /* EDITDISTANCE_H_ */
