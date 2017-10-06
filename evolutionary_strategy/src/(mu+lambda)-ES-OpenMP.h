@@ -28,7 +28,16 @@ void computeChildren(const unsigned lambda, const unsigned mu,
 		const size_t& s1l, const size_t& s2l, const size_t& sig1l,
 		const size_t& sig2l, const unsigned worstParentCostValue,
 		ES_MatchingSchema* const parents, edit_distance& e,
-		matching_schema<bool>& m, const unsigned offSetInPoolThread);
+		matching_schema<bool>& m, unsigned offSetInPoolThread, unsigned childrenToCompute,
+		const unsigned threadNumber, const unsigned numberOfThreads);
+
+void computeParents(const unsigned lambda, const unsigned mu,
+		const unsigned * const blocksig1, const unsigned * const blocksig2,
+		const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
+		const size_t& s1l, const size_t& s2l, const size_t& sig1l,
+		const size_t& sig2l, ES_MatchingSchema* const parents, edit_distance& e,
+		matching_schema<bool>& m, ES_MatchingSchema startingMS, unsigned parentsToComputePerThread,unsigned offSetInPoolThread,
+		const unsigned threadNumber, const unsigned numberOfThreads);
 
 int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 		const std::vector<unsigned>& s2, const size_t& s1l, const size_t& s2l,
@@ -60,19 +69,14 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 
 	//Generate mu random individuals
 	ES_MatchingSchema* const parents = new ES_MatchingSchema[mu + lambda];
-	for (unsigned i = 0; i < mu; ++i)
+	#pragma omp parallel num_threads(numberOfThreads)
 	{
-		startingMS.shuffle();
-
-		startingMS.costValue = e.edit_distance_matching_schema_enhanced(s1, s2,
-				s1l, s2l, startingMS.sigma1, startingMS.sigma2, sig1l, sig2l,
-				m);
-
-		parents[i] = startingMS;
-
+		computeParents(lambda, mu, blocksig1,
+				blocksig2, s1, s2, s1l, s2l, sig1l, sig2l,
+				parents, e, m, startingMS, (mu/numberOfThreads),(mu/numberOfThreads)*omp_get_thread_num(),
+				omp_get_thread_num(),numberOfThreads);
 	}
 	const unsigned last = mu - 1;
-
 
 	//Select the worst parent in the pool
 	unsigned worstParentCostValue=parents[0].costValue;
@@ -91,9 +95,9 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 
 		#pragma omp parallel num_threads(numberOfThreads)
 		{
-			computeChildren(lambda/numberOfThreads, mu, blocksig1,
+			computeChildren(lambda, mu, blocksig1,
 					blocksig2, s1, s2, s1l, s2l, sig1l, sig2l, worstParentCostValue,
-					parents, e, m, (lambda/numberOfThreads)*omp_get_thread_num());
+					parents, e, m, (lambda/numberOfThreads)*omp_get_thread_num(),(lambda/numberOfThreads),omp_get_thread_num(),numberOfThreads);
 
 		}
 
@@ -121,17 +125,33 @@ int evolutionStrategy_omp(const std::vector<unsigned>& s1,
 	return best.costValue;
 }
 
+
+
 void computeChildren(const unsigned lambda, const unsigned mu,
 		const unsigned * const blocksig1, const unsigned * const blocksig2,
 		const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
 		const size_t& s1l, const size_t& s2l, const size_t& sig1l,
 		const size_t& sig2l, const unsigned worstParentCostValue,
 		ES_MatchingSchema* const parents, edit_distance& e,
-		matching_schema<bool>& m, const unsigned offSetInPoolThread)
+		matching_schema<bool>& m, unsigned offSetInPoolThread, unsigned childrenToCompute,
+		const unsigned threadNumber, const unsigned numberOfThreads)
 {
+	const unsigned remainderIndividuals = lambda % numberOfThreads;
+	const unsigned reversedPosition=numberOfThreads - threadNumber - 1;
+	if(remainderIndividuals != 0)
+	{
+		//we are distribuiting the remainder of individuals to the threads, so we need to calculate our new offset in the pool and number of parents
+		if(reversedPosition<remainderIndividuals)
+		{
+			childrenToCompute++;
+			offSetInPoolThread+=remainderIndividuals-1-reversedPosition;
+		}
+	}
+
+
 	unsigned childrenInPool=0;
 	//Generate lambda children. Only mutation, no recombination
-	for (unsigned i = 0; i < lambda; i++)
+	for (unsigned i = 0; i < childrenToCompute; i++)
 	{
 		//Choose random parent
 		const unsigned p = rand() % mu;
@@ -147,11 +167,43 @@ void computeChildren(const unsigned lambda, const unsigned mu,
 		{
 			//The child is better than the worst parent,
 			child.costValue = newDistance;
-			//so he is added to the pool
 
+			//so he is added to the pool
 			parents[mu + offSetInPoolThread + childrenInPool] = child;
 			childrenInPool++;
 		}
+	}
+}
+
+void computeParents(const unsigned lambda, const unsigned mu,
+		const unsigned * const blocksig1, const unsigned * const blocksig2,
+		const std::vector<unsigned>& s1, const std::vector<unsigned>& s2,
+		const size_t& s1l, const size_t& s2l, const size_t& sig1l,
+		const size_t& sig2l, ES_MatchingSchema* const parents, edit_distance& e,
+		matching_schema<bool>& m, ES_MatchingSchema startingMS, unsigned parentsToComputePerThread,unsigned offSetInPoolThread,
+		const unsigned threadNumber, const unsigned numberOfThreads)
+{
+	const unsigned remainderIndividuals = mu % numberOfThreads;
+	const unsigned reversedPosition=numberOfThreads - threadNumber - 1;
+	if(remainderIndividuals != 0)
+	{
+		//we are distribuiting the remainder of individuals to the threads, so we need to calculate our new offset in the pool and number of parents
+		if(reversedPosition<remainderIndividuals)
+		{
+			parentsToComputePerThread++;
+			offSetInPoolThread+=remainderIndividuals-1-reversedPosition;
+		}
+	}
+
+	for (unsigned i = 0; i < parentsToComputePerThread; ++i)
+	{
+		startingMS.shuffle();
+
+		startingMS.costValue = e.edit_distance_matching_schema_enhanced(s1, s2,
+				s1l, s2l, startingMS.sigma1, startingMS.sigma2, sig1l, sig2l,
+				m);
+
+		parents[offSetInPoolThread + i] = startingMS;
 	}
 }
 
